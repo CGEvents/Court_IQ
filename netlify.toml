@@ -1,0 +1,12 @@
+# Court IQ — Netlify configuration
+# Serves index.html and routes /api/coach to the serverless function.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Make the app's /api/coach calls reach the Netlify function.
+[[redirects]]
+  from = "/api/coach"
+  to = "/.netlify/functions/coach"
+  status = 200
