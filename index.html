@@ -74,6 +74,221 @@
   .note{font-size:11.5px;color:var(--chalk-dim);text-align:center;margin-top:22px;line-height:1.6;}
   .dots::after{content:"…";animation:blink 1.2s infinite;}
   @keyframes blink{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+  /* ---- Animations: UI motion, drill icons & demos ---- */
+  @keyframes chipIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .ci{animation:chipIn .5s ease backwards;}
+  .btn-primary,.quick,.pill,.opt,.backbtn,.btn-ghost{transition:transform .1s ease;}
+  .btn-primary:active,.quick:active,.pill:active,.opt:active,.backbtn:active,.btn-ghost:active{transform:scale(.95);}
+
+  .drillchip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;background:rgba(8,20,16,.55);border:1px solid rgba(47,158,84,.3);border-radius:20px;padding:5px 11px;color:var(--chalk);}
+  .drillchip.tap{cursor:pointer;}
+  .drillchip .pd{font-size:8.5px;color:var(--flash);}
+
+  /* small looping icons beside drills (Option 3) */
+  .dico{width:14px;height:14px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;}
+  .dico.ball{border-radius:50%;background:var(--ball);animation:icoBounce .8s cubic-bezier(.5,0,.5,1) infinite alternate;}
+  @keyframes icoBounce{0%{transform:translateY(-3px);}100%{transform:translateY(2px);}}
+  .dico.spin{border-radius:50%;background:var(--blue);position:relative;animation:icoSpin 1.4s linear infinite;}
+  .dico.spin::before{content:"";position:absolute;left:50%;top:1px;bottom:1px;width:1.5px;margin-left:-.75px;background:rgba(8,20,16,.6);}
+  @keyframes icoSpin{to{transform:rotate(360deg);}}
+  .dico.arrow{color:var(--flash);font-size:14px;line-height:1;font-weight:900;animation:icoArrow 1.2s ease-in-out infinite;}
+  @keyframes icoArrow{0%,100%{opacity:.35;transform:translateX(0);}50%{opacity:1;transform:translateX(3px);}}
+  .dico.up{background:var(--line-soft);border-radius:3px;animation:icoUp 1s ease-in-out infinite;}
+  @keyframes icoUp{0%,100%{transform:translateY(2px) scaleY(.9);}50%{transform:translateY(-3px) scaleY(1.05);}}
+
+  /* drill demo overlay (Option 1) */
+  .overlay{position:fixed;inset:0;background:rgba(4,10,8,.82);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeIn .2s ease;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .sheet{background:var(--court2);border:1px solid rgba(47,158,84,.5);border-radius:20px;max-width:380px;width:100%;padding:20px;animation:sheetUp .28s ease;}
+  @keyframes sheetUp{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .dc{position:relative;height:174px;background:rgba(8,20,16,.6);border:1px solid rgba(47,158,84,.25);border-radius:12px;overflow:hidden;margin:10px 0 16px;}
+  .dfloor{position:absolute;left:6%;right:6%;bottom:16px;height:2px;background:rgba(47,158,84,.4);}
+  .dball{position:absolute;width:17px;height:17px;border-radius:50%;background:var(--ball);border:1.5px solid var(--ball-dark);z-index:4;}
+  .dball::before{content:"";position:absolute;left:50%;top:1px;bottom:1px;width:1.5px;margin-left:-.75px;background:var(--ball-dark);}
+  .dball::after{content:"";position:absolute;top:50%;left:1px;right:1px;height:1.5px;margin-top:-.75px;background:var(--ball-dark);}
+  .drim{position:absolute;width:26px;height:4px;background:var(--hot);border-radius:2px;z-index:2;}
+  .dnet{position:absolute;width:20px;height:15px;border:1px solid rgba(244,246,241,.45);border-top:none;border-radius:0 0 8px 8px;z-index:2;}
+  .dcone{position:absolute;bottom:16px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:15px solid var(--flash);}
+
+  /* articulated stick figure */
+  .figwrap{position:absolute;left:50%;margin-left:-55px;bottom:12px;width:110px;height:158px;z-index:3;}
+  .figwrap.shoot,.figwrap.layup,.figwrap.pass{left:35%;}
+  .sfig{width:100%;height:100%;overflow:visible;}
+  .sfig .torso,.sfig .limb{stroke:var(--chalk);stroke-width:5;stroke-linecap:round;fill:none;}
+  .sfig .head{stroke:var(--chalk);stroke-width:4.5;fill:var(--court);}
+  .limb{transform-box:view-box;}
+  .armL{transform-origin:100px 50px;transform:rotate(-22deg);}
+  .armR{transform-origin:100px 50px;transform:rotate(22deg);}
+  .legL{transform-origin:100px 96px;transform:rotate(-9deg);}
+  .legR{transform-origin:100px 96px;transform:rotate(9deg);}
+
+  /* dribble */
+  .figwrap.dribble .legL{transform:rotate(-13deg);}.figwrap.dribble .legR{transform:rotate(13deg);}
+  .figwrap.dribble .armL{transform:rotate(-26deg);}
+  .figwrap.dribble .armR{animation:dribArm .55s ease-in-out infinite;}
+  @keyframes dribArm{0%,100%{transform:rotate(36deg);}50%{transform:rotate(58deg);}}
+  .a-dribble{left:54%;animation:dribBall .55s ease-in-out infinite;}
+  @keyframes dribBall{0%,100%{bottom:84px;}50%{bottom:20px;}}
+
+  /* crossover */
+  .figwrap.cross{animation:crossSway 1.4s ease-in-out infinite;}
+  @keyframes crossSway{0%,100%{transform:translateX(-9px);}50%{transform:translateX(9px);}}
+  .figwrap.cross .legL{transform:rotate(-15deg);}.figwrap.cross .legR{transform:rotate(15deg);}
+  .figwrap.cross .armL{animation:crossArmL 1.4s ease-in-out infinite;}.figwrap.cross .armR{animation:crossArmR 1.4s ease-in-out infinite;}
+  @keyframes crossArmL{0%,100%{transform:rotate(-50deg);}50%{transform:rotate(-18deg);}}
+  @keyframes crossArmR{0%,100%{transform:rotate(18deg);}50%{transform:rotate(50deg);}}
+  .a-cross{animation:crossBall 1.4s ease-in-out infinite;}
+  @keyframes crossBall{0%{left:26%;bottom:34px;}50%{left:50%;bottom:20px;}100%{left:66%;bottom:34px;}}
+
+  /* shooting */
+  .figwrap.shoot{animation:shootBody 2.4s ease-in-out infinite;}
+  @keyframes shootBody{0%,100%{transform:translateY(0);}22%{transform:translateY(9px);}54%{transform:translateY(-7px);}}
+  .figwrap.shoot .armL{animation:shArmL 2.4s ease-in-out infinite;}
+  @keyframes shArmL{0%,100%{transform:rotate(-22deg);}22%{transform:rotate(-6deg);}52%,68%{transform:rotate(-162deg);}}
+  .figwrap.shoot .armR{animation:shArmR 2.4s ease-in-out infinite;}
+  @keyframes shArmR{0%,100%{transform:rotate(22deg);}22%{transform:rotate(6deg);}52%,68%{transform:rotate(162deg);}}
+  .figwrap.shoot .legL{animation:shLegL 2.4s ease-in-out infinite;}
+  @keyframes shLegL{0%,100%{transform:rotate(-9deg);}22%{transform:rotate(-15deg);}54%{transform:rotate(-5deg);}}
+  .figwrap.shoot .legR{animation:shLegR 2.4s ease-in-out infinite;}
+  @keyframes shLegR{0%,100%{transform:rotate(9deg);}22%{transform:rotate(15deg);}54%{transform:rotate(5deg);}}
+  .a-shot{offset-path:path('M118 56 Q205 -28 300 64');animation:shotBall 2.4s ease-in infinite;}
+  @keyframes shotBall{0%,24%{offset-distance:0%;opacity:1;}56%{offset-distance:100%;opacity:1;}59%{opacity:0;}99%{opacity:0;}100%{offset-distance:0%;opacity:0;}}
+
+  /* layups & finishing */
+  .figwrap.layup{animation:jumpBody 1.9s cubic-bezier(.3,0,.4,1) infinite;}
+  .figwrap.layup .armR{animation:shArmR 1.9s ease-in-out infinite;}
+  .figwrap.layup .armL{transform:rotate(-30deg);}
+  .a-layup{offset-path:path('M120 64 Q210 6 300 52');animation:shotBall 1.9s ease-in infinite;}
+
+  /* defensive slide */
+  .figwrap.slide{animation:slideBody 2s ease-in-out infinite;}
+  @keyframes slideBody{0%{transform:translate(-36px,12px);}50%{transform:translate(36px,12px);}100%{transform:translate(-36px,12px);}}
+  .figwrap.slide .armL{transform:rotate(-74deg);}.figwrap.slide .armR{transform:rotate(74deg);}
+  .figwrap.slide .legL{transform:rotate(-30deg);}.figwrap.slide .legR{transform:rotate(30deg);}
+
+  /* jumps & landings */
+  .figwrap.jump{animation:jumpBody 1.7s cubic-bezier(.3,0,.4,1) infinite;}
+  @keyframes jumpBody{0%,12%{transform:translateY(14px);}46%,66%{transform:translateY(-34px);}100%{transform:translateY(0);}}
+  .figwrap.jump .armL{animation:jumpArmL 1.7s ease-in-out infinite;}
+  @keyframes jumpArmL{0%,12%{transform:rotate(10deg);}46%{transform:rotate(-150deg);}100%{transform:rotate(-22deg);}}
+  .figwrap.jump .armR{animation:jumpArmR 1.7s ease-in-out infinite;}
+  @keyframes jumpArmR{0%,12%{transform:rotate(-10deg);}46%{transform:rotate(150deg);}100%{transform:rotate(22deg);}}
+  .figwrap.jump .legL{animation:jumpLegL 1.7s ease-in-out infinite;}
+  @keyframes jumpLegL{0%,12%{transform:rotate(-17deg);}46%{transform:rotate(-6deg);}100%{transform:rotate(-9deg);}}
+  .figwrap.jump .legR{animation:jumpLegR 1.7s ease-in-out infinite;}
+  @keyframes jumpLegR{0%,12%{transform:rotate(17deg);}46%{transform:rotate(6deg);}100%{transform:rotate(9deg);}}
+
+  /* passing */
+  .figwrap.pass .armL{animation:passArmL 1.6s ease-in-out infinite;}
+  @keyframes passArmL{0%,100%{transform:rotate(-22deg);}38%,58%{transform:rotate(76deg);}}
+  .figwrap.pass .armR{animation:passArmR 1.6s ease-in-out infinite;}
+  @keyframes passArmR{0%,100%{transform:rotate(22deg);}38%,58%{transform:rotate(82deg);}}
+  .a-pass{top:72px;animation:passBall 1.6s ease-in-out infinite;}
+  @keyframes passBall{0%,38%{left:46%;opacity:0;}43%{opacity:1;}100%{left:86%;opacity:1;}}
+
+  /* speed & reactions (run in place) */
+  .figwrap.sprint{animation:runBob .5s ease-in-out infinite;}
+  @keyframes runBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+  .figwrap.sprint .legL{animation:runLegL .5s linear infinite;}.figwrap.sprint .legR{animation:runLegR .5s linear infinite;}
+  .figwrap.sprint .armL{animation:runArmL .5s linear infinite;}.figwrap.sprint .armR{animation:runArmR .5s linear infinite;}
+  @keyframes runLegL{0%{transform:rotate(30deg);}50%{transform:rotate(-30deg);}100%{transform:rotate(30deg);}}
+  @keyframes runLegR{0%{transform:rotate(-30deg);}50%{transform:rotate(30deg);}100%{transform:rotate(-30deg);}}
+  @keyframes runArmL{0%{transform:rotate(-34deg);}50%{transform:rotate(22deg);}100%{transform:rotate(-34deg);}}
+  @keyframes runArmR{0%{transform:rotate(34deg);}50%{transform:rotate(-22deg);}100%{transform:rotate(34deg);}}
+
+  /* mikan */
+  .figwrap.mikan{animation:jumpBody 1.4s cubic-bezier(.3,0,.4,1) infinite;}
+  .figwrap.mikan .armL{animation:jumpArmL 1.4s ease-in-out infinite;}
+  .figwrap.mikan .armR{animation:jumpArmR 1.4s ease-in-out infinite;}
+  .a-mikan{animation:mikBall 1.4s ease-in-out infinite;}
+  @keyframes mikBall{0%{left:40%;bottom:54px;}46%{left:50%;bottom:118px;}100%{left:60%;bottom:54px;}}
+
+  /* rip & drive */
+  .figwrap.rip{animation:ripBody 1.8s ease-in-out infinite;}
+  @keyframes ripBody{0%,100%{transform:translateX(-7px);}55%{transform:translateX(9px);}}
+  .figwrap.rip .armL{animation:ripArm 1.8s ease-in-out infinite;}.figwrap.rip .armR{animation:ripArm 1.8s ease-in-out infinite;}
+  @keyframes ripArm{0%,100%{transform:rotate(-50deg);}50%{transform:rotate(42deg);}}
+  .figwrap.rip .legL{transform:rotate(-14deg);}.figwrap.rip .legR{transform:rotate(14deg);}
+  .a-rip{animation:ripBall 1.8s ease-in-out infinite;}
+  @keyframes ripBall{0%,100%{left:38%;bottom:42px;}50%{left:60%;bottom:34px;}}
+
+  /* veer step — drive, bump the defender, finish */
+  .figwrap.veer{left:34%;animation:veerBody 2.6s cubic-bezier(.45,0,.35,1) infinite;}
+  @keyframes veerBody{0%,10%{transform:translate(-22px,9px) rotate(0deg);}34%{transform:translate(32px,9px) rotate(0deg);}46%{transform:translate(40px,9px) rotate(-10deg);}72%,86%{transform:translate(56px,-24px) rotate(-7deg);}100%{transform:translate(-22px,9px) rotate(0deg);}}
+  .figwrap.veer .armR{animation:veerArmR 2.6s ease-in-out infinite;}
+  @keyframes veerArmR{0%,46%{transform:rotate(42deg);}72%,86%{transform:rotate(156deg);}100%{transform:rotate(42deg);}}
+  .figwrap.veer .armL{transform:rotate(-34deg);}
+  .figwrap.veer .legL{animation:veerLegL 2.6s ease-in-out infinite;}.figwrap.veer .legR{animation:veerLegR 2.6s ease-in-out infinite;}
+  @keyframes veerLegL{0%,10%{transform:rotate(-26deg);}34%{transform:rotate(-8deg);}72%{transform:rotate(-15deg);}100%{transform:rotate(-26deg);}}
+  @keyframes veerLegR{0%,10%{transform:rotate(8deg);}34%{transform:rotate(26deg);}72%{transform:rotate(13deg);}100%{transform:rotate(8deg);}}
+  .a-veer{animation:veerBall 2.6s ease-in-out infinite;}
+  @keyframes veerBall{0%,10%{left:30%;bottom:42px;}34%{left:50%;bottom:40px;}46%{left:56%;bottom:46px;}72%,86%{left:70%;bottom:96px;}100%{left:30%;bottom:42px;}}
+
+  /* defender figure (static, dimmed) */
+  .figwrap.deffig{opacity:.5;}
+  .figwrap.deffig .torso,.figwrap.deffig .limb{stroke:var(--chalk-dim);}
+  .figwrap.deffig .head{stroke:var(--chalk-dim);}
+  .figwrap.deffig .armL{transform:rotate(-58deg);}.figwrap.deffig .armR{transform:rotate(58deg);}
+  .figwrap.deffig .legL{transform:rotate(-20deg);}.figwrap.deffig .legR{transform:rotate(20deg);}
+
+  /* up-and-under (shot fake, step through, finish) */
+  .figwrap.upunder{left:38%;animation:uuBody 2.6s cubic-bezier(.4,0,.3,1) infinite;}
+  @keyframes uuBody{0%,30%{transform:translate(0,6px);}60%,86%{transform:translate(40px,-6px);}100%{transform:translate(0,6px);}}
+  .figwrap.upunder .armR{animation:uuArm 2.6s ease-in-out infinite;}
+  @keyframes uuArm{0%{transform:rotate(40deg);}16%{transform:rotate(152deg);}32%{transform:rotate(58deg);}62%,86%{transform:rotate(150deg);}100%{transform:rotate(40deg);}}
+  .figwrap.upunder .armL{transform:rotate(-30deg);}
+  .figwrap.upunder .legL{transform:rotate(-16deg);}.figwrap.upunder .legR{transform:rotate(16deg);}
+  .a-upunder{animation:uuBall 2.6s ease-in-out infinite;}
+  @keyframes uuBall{0%{left:50%;bottom:50px;}16%{left:52%;bottom:98px;}32%{left:50%;bottom:54px;}62%,86%{left:72%;bottom:94px;}100%{left:50%;bottom:50px;}}
+
+  /* contact finishing */
+  .figwrap.contact{animation:contactBody 1.9s cubic-bezier(.3,0,.4,1) infinite;}
+  @keyframes contactBody{0%,12%{transform:translateY(14px) rotate(0deg);}46%,66%{transform:translateY(-30px) rotate(-11deg);}100%{transform:translateY(0) rotate(0deg);}}
+  .figwrap.contact .armR{animation:shArmR 1.9s ease-in-out infinite;}
+  .figwrap.contact .armL{transform:rotate(-42deg);}
+  .a-contact{offset-path:path('M120 64 Q205 6 298 50');animation:shotBall 1.9s ease-in infinite;}
+  .ddef{position:absolute;background:rgba(174,188,178,.45);border-radius:4px;}
+
+  /* post moves */
+  .figwrap.post{left:42%;animation:postBody 2s cubic-bezier(.4,0,.3,1) infinite;}
+  @keyframes postBody{0%,20%{transform:translate(0,6px);}55%,80%{transform:translate(38px,-8px);}100%{transform:translate(0,6px);}}
+  .figwrap.post .armR{animation:postArm 2s ease-in-out infinite;}
+  @keyframes postArm{0%,20%{transform:rotate(40deg);}55%,80%{transform:rotate(150deg);}100%{transform:rotate(40deg);}}
+  .figwrap.post .armL{transform:rotate(-32deg);}
+  .figwrap.post .legL{transform:rotate(-18deg);}.figwrap.post .legR{transform:rotate(18deg);}
+  .a-post{animation:postBall 2s ease-in-out infinite;}
+  @keyframes postBall{0%,20%{left:50%;bottom:48px;}55%,80%{left:72%;bottom:94px;}100%{left:50%;bottom:48px;}}
+
+  /* ===== Shot Mechanics mini-demos ===== */
+  .mc{position:relative;height:120px;background:rgba(8,20,16,.6);border:1px solid rgba(47,158,84,.25);border-radius:12px;overflow:hidden;margin:12px 0 0;}
+  .mrim{position:absolute;left:50%;top:12px;width:34px;height:11px;margin-left:-17px;border:2.5px solid var(--hot);border-bottom:none;border-radius:17px 17px 0 0;}
+  .mguide{position:absolute;left:50%;top:22px;bottom:30px;border-left:1.5px dashed rgba(255,210,63,.45);}
+  .mfoot{position:absolute;bottom:24px;width:13px;height:27px;background:var(--line-soft);border-radius:6px 6px 3px 3px;transform-origin:bottom center;}
+  .mfoot::after{content:"";position:absolute;top:-3px;left:2px;right:2px;height:5px;background:var(--chalk);border-radius:3px;}
+  .mfootL{left:calc(50% - 21px);animation:toesL 2.6s ease-in-out infinite;}
+  .mfootR{left:calc(50% + 8px);animation:toesR 2.6s ease-in-out infinite;}
+  @keyframes toesL{0%,100%{transform:rotate(-22deg);}45%,70%{transform:rotate(0deg);}}
+  @keyframes toesR{0%,100%{transform:rotate(22deg);}45%,70%{transform:rotate(0deg);}}
+  .melbowwrap{display:flex;height:100%;}
+  .mhalf{flex:1;position:relative;}
+  .mhalf+.mhalf{border-left:1px solid rgba(47,158,84,.2);}
+  .marm{width:100%;height:100%;}
+  .mbone{stroke-width:5;stroke-linecap:round;fill:none;}
+  .mbone.bad{stroke:rgba(232,91,91,.9);}
+  .mbone.good{stroke:var(--chalk);}
+  .mball{fill:var(--ball);stroke:var(--ball-dark);stroke-width:1.5;}
+  .mjoint.bad{fill:var(--hot);}.mjoint.good{fill:var(--line-soft);}
+  .mvguide{stroke:rgba(255,210,63,.6);stroke-width:1.5;stroke-dasharray:3 3;animation:vgPulse 1.8s ease-in-out infinite;}
+  @keyframes vgPulse{0%,100%{opacity:.35;}50%{opacity:.9;}}
+  .mlabel{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:10.5px;font-weight:800;}
+  .mcj{width:100%;height:100%;}
+  .mfing{stroke:var(--chalk);stroke-width:2.5;stroke-linecap:round;fill:none;}
+  .mjar{fill:none;stroke:rgba(174,188,178,.5);stroke-width:2;}
+  .mjarlid{fill:rgba(174,188,178,.15);stroke:rgba(174,188,178,.5);stroke-width:1.5;}
+  .mwrist{transform-box:view-box;transform-origin:78px 52px;animation:cookie 2s ease-in-out infinite;}
+  @keyframes cookie{0%,18%{transform:rotate(8deg);}48%,72%{transform:rotate(-60deg);}100%{transform:rotate(8deg);}}
+
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
 </style>
 </head>
@@ -142,7 +357,7 @@ const COACH_BANK = {
     "Keep your dribble low and hard, head up. Add a cone and attack it with a different move each time.",
   ],
   defence: [
-    "Defence is effort and feet, not gambling. Stay low, slide don't cross, and move on your man's hips, not the ball.",
+    "Defence is effort and feet, not gambling. Stay low, slide don't cross, and watch the centre of their chest, not the ball.",
     "Great defenders beat their man to the spot. Stay in a stance, contest without fouling, and box out every time.",
     "Pride yourself on stops. Low stance, active hands, and never give up on a play — that's the stuff coaches love.",
   ],
@@ -306,6 +521,7 @@ const WORKOUTS=[
   {title:"Shooting Builder",focus:"Form & range",phase:"off",drills:["Form shooting","Spot shooting","Catch & shoot","Triple-threat reads","Free throws"]},
   {title:"Playmaker",focus:"Vision & moves",phase:"off",drills:["Wall passing","Pass off dribble","Jab series","Cone combos","Vision call-outs"]},
   {title:"Two-Way Day",focus:"Defence + finishing",phase:"off",drills:["Defensive slides","Closeouts","Box out","Reverse layups","Floater"]},
+  {title:"Scoring Moves",focus:"Create & finish",phase:"off",drills:["Low rip to drive","High rip to drive","Veer step","Contact finishing","Drop step","Up-and-under"]},
   {title:"Speed + Jumps",focus:"Engine room",phase:"off",drills:["Reaction starts","5-10-5 shuttle","Broad jumps","Bounds","Box jumps (step down)"]},
   {title:"Quick Skills Touch-Up",focus:"Stay sharp, low load",phase:"in",drills:["Pound dribbles","Spot shooting","Mikan drill","Triple-threat reads"]},
   {title:"Shooting Tune-Up",focus:"Reps & free throws",phase:"in",drills:["Form shooting","Catch & shoot","Free throws"]},
@@ -339,7 +555,91 @@ const IC={
   send:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a1512" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L20 4 L14 20 L11 13 Z"/></svg>`,
   spark:c=>`<svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3 L13.5 9 L19 10.5 L13.5 12 L12 18 L10.5 12 L5 10.5 L10.5 9 Z" fill="${c}"/></svg>`,
   save:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4 H16 L19 7 V20 H5 Z"/><path d="M8 4 V9 H15 M8 20 V14 H16 V20"/></svg>`,
+  aim:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1 V4 M12 20 V23 M1 12 H4 M20 12 H23"/></svg>`,
 };
+
+// =================== DRILL ANIMATIONS (icons, chips, demos) ================
+// Map any drill name to one of our demo categories (order matters).
+function drillDemoKey(d){
+  const t=(d||"").toLowerCase();
+  if(/mikan/.test(t)) return "mikan";
+  if(/up.?and.?under|up.?under/.test(t)) return "upunder";
+  if(/drop.?step|post/.test(t)) return "dropstep";
+  if(/contact/.test(t)) return "contact";
+  if(/rip/.test(t)) return "rip";
+  if(/veer/.test(t)) return "veer";
+  if(/slide|defen|closeout|close out|box out|lockdown|guard/.test(t)) return "slide";
+  if(/jump|broad|bound|pogo|vert|hop/.test(t)) return "jump";
+  if(/layup|reverse|finish|floater/.test(t)) return "layup";
+  if(/cross|cone|combo|euro|jab|triple/.test(t)) return "cross";
+  if(/dribbl|pound|handle|ball control/.test(t)) return "dribble";
+  if(/shoot|shot|form|spot|catch|free throw|jumper|range/.test(t)) return "shot";
+  if(/pass|wall|vision/.test(t)) return "pass";
+  if(/sprint|shuttle|reaction|speed|start|5-10-5/.test(t)) return "sprint";
+  return null;
+}
+// Little looping icon beside each drill (Option 3).
+function drillIcon(d){
+  const k=drillDemoKey(d); let cls="ball",inner="";
+  if(k==="slide"||k==="sprint"||k==="pass"||k==="veer"){cls="arrow";inner="&raquo;";}
+  else if(k==="cross"||k==="mikan"||k==="rip"){cls="spin";}
+  else if(k==="jump"||k==="contact"||k==="dropstep"||k==="upunder"){cls="up";}
+  return `<span class="dico ${cls}" aria-hidden="true">${inner}</span>`;
+}
+// One drill chip: icon + name, staggered entrance, tappable if it has a demo.
+function drillChip(d,i){
+  const key=drillDemoKey(d), ic=drillIcon(d);
+  const delay=`animation-delay:${(i*0.06).toFixed(2)}s`;
+  const attrs = key ? `class="drillchip ci tap" onclick="showDrill('${key}')"` : `class="drillchip ci"`;
+  return `<span ${attrs} style="${delay}">${ic}<span>${esc(d)}</span>${key?'<span class="pd">&#9658;</span>':''}</span>`;
+}
+// Reusable articulated stick figure (limbs pivot at shoulders/hips via CSS).
+const SFIG='<svg class="sfig" viewBox="0 0 200 170" aria-hidden="true">'+
+  '<line class="limb legL" x1="100" y1="96" x2="100" y2="150"/>'+
+  '<line class="limb legR" x1="100" y1="96" x2="100" y2="150"/>'+
+  '<line class="torso" x1="100" y1="50" x2="100" y2="96"/>'+
+  '<line class="limb armL" x1="100" y1="50" x2="100" y2="86"/>'+
+  '<line class="limb armR" x1="100" y1="50" x2="100" y2="86"/>'+
+  '<circle class="head" cx="100" cy="38" r="12"/></svg>';
+function dScene(drill,props){ return `<div class="dc"><div class="dfloor"></div>${props||""}<div class="figwrap ${drill}">${SFIG}</div></div>`; }
+
+// Animated demo scenes + short coaching cues (Option 1).
+const DRILL_DEMO={
+  dribble:{title:"Pound dribbles",scene:dScene("dribble",'<div class="dball a-dribble"></div>'),how:["Pound the ball hard, no higher than your knee.","Eyes up — don't look at the ball.","Both hands, stay low and balanced."]},
+  cross:{title:"Crossover & cones",scene:dScene("cross",'<div class="dcone" style="left:22%"></div><div class="dcone" style="left:72%"></div><div class="dball a-cross"></div>'),how:["Push the ball low and quick across your body.","Change speed as you cross over.","Head up — attack past the cone."]},
+  mikan:{title:"Mikan drill",scene:dScene("mikan",'<div class="drim" style="left:calc(50% - 13px);top:22px"></div><div class="dnet" style="left:calc(50% - 10px);top:26px"></div><div class="dball a-mikan"></div>'),how:["Stand right under the rim.","Lay it in, catch it, lay it in the other side.","Soft, high touches off the backboard."]},
+  shot:{title:"Shooting form",scene:dScene("shoot",'<div class="drim" style="right:26px;top:56px"></div><div class="dnet" style="right:29px;top:60px"></div><div class="dball a-shot"></div>'),how:["Balanced feet, elbow tucked in.","Smooth up and follow through high.","Hold it high — reach in the cookie jar."]},
+  layup:{title:"Layups & finishing",scene:dScene("layup",'<div class="drim" style="right:26px;top:46px"></div><div class="dnet" style="right:29px;top:50px"></div><div class="dball a-layup"></div>'),how:["Drive hard and jump off the correct foot.","Protect the ball, lay it soft off the glass.","Finish strong, even through contact."]},
+  slide:{title:"Defensive slides",scene:dScene("slide",""),how:["Stay low in a wide, strong stance.","Push and slide — never cross your feet.","Watch the centre of their chest, not the ball or fakes."]},
+  jump:{title:"Jumps & landings",scene:dScene("jump",""),how:["Load up: bend your knees and swing your arms.","Explode up as tall as you can.","Land soft and quiet. Always step DOWN off a box."]},
+  pass:{title:"Passing & vision",scene:dScene("pass",'<div style="position:absolute;right:20px;top:34px;bottom:16px;width:4px;background:rgba(47,158,84,.45)"></div><div class="dball a-pass"></div>'),how:["Step into it and snap it from your chest.","Eyes up — read the whole floor.","On time, on target, into their hands."]},
+  sprint:{title:"Speed & reactions",scene:dScene("sprint",""),how:["Explode from a low, strong first step.","Pump your arms; rise up as you build speed.","Quality sprints with full rest beat tired ones."]},
+  rip:{title:"Rip & drive",scene:dScene("rip",'<div class="dball a-rip"></div>'),how:["Low rip: rip the ball low past your knees to drive.","High rip: rip it up past your shoulders for space.","Rip hard and explode past on your first step."]},
+  veer:{title:"Veer step",scene:dScene("veer",'<div class="figwrap deffig" style="left:47%">'+SFIG+'</div><div class="drim" style="right:26px;top:48px"></div><div class="dnet" style="right:29px;top:52px"></div><div class="dball a-veer"></div>'),how:["Veer hard off your outside foot to change direction.","Take the bump — stay strong and keep your balance.","Go up through the contact and finish soft off the glass."]},
+  contact:{title:"Contact finishing",scene:dScene("contact",'<div class="ddef" style="right:60px;bottom:16px;width:8px;height:78px"></div><div class="drim" style="right:26px;top:48px"></div><div class="dnet" style="right:29px;top:52px"></div><div class="dball a-contact"></div>'),how:["Jump off two feet and stay strong through the bump.","Protect the ball high, away from the defender.","Finish soft off the glass, even through contact."]},
+  dropstep:{title:"Post — drop step",scene:dScene("post",'<div class="drim" style="right:26px;top:46px"></div><div class="dnet" style="right:29px;top:50px"></div><div class="dball a-post"></div>'),how:["Seal your defender with a wide, low base.","Drop-step toward the rim off your back foot.","Power up off two feet and finish high off the board."]},
+  upunder:{title:"Post — up-and-under",scene:dScene("upunder",'<div class="drim" style="right:26px;top:46px"></div><div class="dnet" style="right:29px;top:50px"></div><div class="dball a-upunder"></div>'),how:["Shot-fake to lift the defender off the floor.","Step through underneath as they fly by.","Finish soft on the other side of the rim."]},
+};
+window.showDrill=(key)=>{
+  const d=DRILL_DEMO[key]; if(!d) return;
+  const el=document.createElement("div");
+  el.className="overlay"; el.id="drilloverlay";
+  el.onclick=e=>{ if(e.target===el) closeDrill(); };
+  el.innerHTML=`<div class="sheet">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div style="font-weight:900;font-size:19px">${esc(d.title)}</div>
+      <button class="backbtn" style="width:34px;height:34px;font-size:15px;color:var(--chalk)" onclick="closeDrill()" aria-label="Close demo">&#10005;</button>
+    </div>
+    ${d.scene}
+    <div style="font-size:11px;color:var(--line-soft);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">How to</div>
+    <ol style="margin:0;padding-left:18px;font-size:14px;line-height:1.6">
+      ${d.how.map(h=>`<li style="margin-bottom:4px">${esc(h)}</li>`).join("")}
+    </ol>
+    <p class="note" style="text-align:left;margin-top:14px">These animations are simple guides — always ask your coach to check your form.</p>
+  </div>`;
+  document.body.appendChild(el);
+};
+window.closeDrill=()=>{ const el=$("#drilloverlay"); if(el) el.remove(); };
 
 // =================== RENDER ================================================
 let toastTimer=null;
@@ -349,6 +649,7 @@ function render(){
   if(!active){ renderGate(); return; }
   if(screen==="hub") renderHub();
   else if(screen==="coach") renderCoach();
+  else if(screen==="mechanics") renderMechanics();
   else if(screen==="picker") renderPicker();
   else if(screen==="reframe") renderReframe();
   else if(screen==="review") renderReview();
@@ -401,6 +702,7 @@ function renderHub(){
   const p=me();const b=earned(p);
   const tiles=[
     {s:"coach",ic:IC.chat("#2f9e54"),col:"#2f9e54",t:"AI Coach",d:"Chat about your game, get a pep talk or tip"},
+    {s:"mechanics",ic:IC.aim("#f59e3c"),col:"#f59e3c",t:"Shot Mechanics",d:"Build perfect shooting form, step by step"},
     {s:"picker",ic:IC.dice("#5aa9e6"),col:"#5aa9e6",t:"What Should I Train?",d:"Smart pick for today, based on your week"},
     {s:"reframe",ic:IC.flip("#ffd23f"),col:"#ffd23f",t:"Flip My Thinking",d:"Type what's bugging you — flip it around"},
     {s:"progress",ic:IC.chart("#e8743c"),col:"#e8743c",t:"My Progress",d:"Charts of your bests, plus log a new record"},
@@ -421,14 +723,14 @@ function renderHub(){
       <div style="font-size:22px;font-weight:900;margin:6px 0 4px">${esc(rec.title)}</div>
       <div style="color:var(--chalk-dim);font-size:14px;margin-bottom:12px">${esc(rec.why)}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
-        ${(rec.drills||[]).map(d=>`<span style="font-size:11.5px;background:rgba(8,20,16,.55);border:1px solid rgba(47,158,84,.3);border-radius:20px;padding:4px 10px">${esc(d)}</span>`).join("")}
+        ${(rec.drills||[]).map((d,i)=>drillChip(d,i)).join("")}
       </div>
       ${rec.rest?`<button class="btn-ghost" onclick="goto('picker')">Pick a different session</button>`
         :`<button class="btn-primary" style="width:100%" onclick="startToday()">Start today's session 🏀</button>`}
     </div>
 
     <div class="sectlabel"><span style="display:inline-flex;align-items:center;gap:6px">${IC.spark("#ffd23f")} Tools</span></div>`+
-    tiles.map(t=>`<button class="tile" style="border-color:${t.col}55;background:linear-gradient(180deg,${t.col}1f,${t.col}08)" onclick="goto('${t.s}')">
+    tiles.map((t,i)=>`<button class="tile ci" style="border-color:${t.col}55;background:linear-gradient(180deg,${t.col}1f,${t.col}08);animation-delay:${(i*0.05).toFixed(2)}s" onclick="goto('${t.s}')">
       <div class="ic" style="background:${t.col}22">${t.ic}</div>
       <div style="flex:1"><div class="tt">${t.t}</div><div class="ts">${t.d}</div></div>
     </button>`).join("")+
@@ -439,6 +741,44 @@ window.goto=s=>{screen=s;render();};
 window.home=()=>{screen="hub";render();};
 
 function backbar(title){return `<div class="backbar"><button class="backbtn" onclick="home()">${IC.back}</button><span class="ttl">${title}</span></div>`;}
+
+// ================= SHOT MECHANICS =================
+const MECH_FEET=`<div class="mc"><div class="mrim"></div><div class="mguide"></div><div class="mfoot mfootL"></div><div class="mfoot mfootR"></div></div>`;
+const MECH_ELBOW=`<div class="mc"><div class="melbowwrap">
+  <div class="mhalf"><svg viewBox="0 0 80 96" class="marm" aria-hidden="true">
+    <line class="mbone bad" x1="40" y1="24" x2="15" y2="55"/><line class="mbone bad" x1="15" y1="55" x2="40" y2="88"/>
+    <circle class="mball" cx="40" cy="15" r="9"/><circle class="mjoint bad" cx="15" cy="55" r="4"/></svg>
+    <div class="mlabel" style="color:var(--hot)">&#10007; Chicken wing</div></div>
+  <div class="mhalf"><svg viewBox="0 0 80 96" class="marm" aria-hidden="true">
+    <line class="mvguide" x1="40" y1="8" x2="40" y2="92"/>
+    <line class="mbone good" x1="40" y1="24" x2="40" y2="56"/><line class="mbone good" x1="40" y1="56" x2="40" y2="88"/>
+    <circle class="mball" cx="40" cy="15" r="9"/><circle class="mjoint good" cx="40" cy="56" r="4"/></svg>
+    <div class="mlabel" style="color:var(--line-soft)">&#10003; Straight line</div></div>
+</div></div>`;
+const MECH_COOKIE=`<div class="mc"><svg viewBox="0 0 130 116" class="mcj" aria-hidden="true">
+  <rect class="mjar" x="20" y="60" width="36" height="40" rx="5"/><rect class="mjarlid" x="16" y="53" width="44" height="9" rx="3"/>
+  <line class="mbone good" x1="92" y1="110" x2="80" y2="52"/>
+  <g class="mwrist"><line class="mbone good" x1="80" y1="52" x2="76" y2="24"/>
+    <line class="mfing" x1="76" y1="24" x2="70" y2="15"/><line class="mfing" x1="76" y1="24" x2="78" y2="13"/><line class="mfing" x1="76" y1="24" x2="85" y2="17"/></g>
+</svg></div>`;
+function mechCard(tag,title,scene,cues){
+  return `<div class="card ci" style="margin-bottom:14px">
+    <div style="font-size:11px;color:var(--flash);font-weight:800;letter-spacing:.1em;text-transform:uppercase">${tag}</div>
+    <div style="font-size:18px;font-weight:900;margin:2px 0 0">${esc(title)}</div>
+    ${scene}
+    <ul style="margin:12px 0 0;padding-left:18px;font-size:13.5px;line-height:1.55">
+      ${cues.map(c=>`<li style="margin-bottom:3px">${esc(c)}</li>`).join("")}
+    </ul></div>`;
+}
+function renderMechanics(){
+  app.innerHTML=topbar()+backbar("Shot Mechanics")+`
+    <p style="color:var(--chalk-dim);font-size:14.5px;margin:2px 2px 16px">Three keys to a pure shot. Watch each one, then groove it with reps close to the rim. 🎯</p>
+    ${mechCard("1 · Base","10 toes to the basket",MECH_FEET,["Point all ten toes straight at the rim.","Feet about shoulder-width, knees bent.","A square base gives you a square, repeatable shot."])}
+    ${mechCard("2 · Alignment","Elbow under the ball",MECH_ELBOW,["Shooting elbow in a straight line under the ball.","Pointed at the hoop — no chicken wing.","Shoulder, elbow, wrist and ball all stacked up."])}
+    ${mechCard("3 · Follow-through","Hand in the cookie jar",MECH_COOKIE,["Snap your wrist down as you release.","Reach your hand into the cookie jar.","Hold the follow-through until the ball lands."])}
+    ${mechCard("4 · Routine","Free-throw routine",dScene("shoot",'<div class="drim" style="right:26px;top:56px"></div><div class="dnet" style="right:29px;top:60px"></div><div class="dball a-shot"></div>'),["Same routine every time — that's what builds confidence.","Line your shooting foot up with the middle of the rim.","Three dribbles, deep breath, eyes on the back of the rim.","Up smooth, snap the wrist, hold the cookie jar."])}
+    <p class="note">Start slow and close to the basket — perfect reps build a perfect shot. Beat your free-throw best in My Progress!</p>`;
+}
 
 // ================= PROGRESS (charts + log a best) =================
 function sparkline(points,opts){
@@ -589,7 +929,7 @@ function renderPickerResult(){
       <h2 style="font-size:28px;font-weight:900;margin:8px 0">${esc(pk.result.title)}</h2>
       <p style="color:var(--chalk-dim);font-size:15px;max-width:40ch;margin:0 auto 14px">${esc(pk.result.why)}</p>
       <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
-        ${(pk.result.drills||[]).map(d=>`<span style="font-size:12px;background:rgba(8,20,16,.6);border:1px solid #5aa9e644;border-radius:20px;padding:5px 12px">${esc(d)}</span>`).join("")}
+        ${(pk.result.drills||[]).map((d,i)=>drillChip(d,i)).join("")}
       </div></div>
       <button class="btn-primary" style="width:100%;margin-top:16px" onclick="logPick()">Done — log this session 🔥</button>
       <button class="btn-ghost" style="margin-top:12px" onclick="resetPick()">Pick again</button>`);
