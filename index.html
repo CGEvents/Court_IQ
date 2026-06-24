@@ -115,8 +115,17 @@
   .figwrap{position:absolute;left:50%;margin-left:-55px;bottom:12px;width:110px;height:158px;z-index:3;}
   .figwrap.shoot,.figwrap.layup,.figwrap.pass{left:35%;}
   .sfig{width:100%;height:100%;overflow:visible;}
-  .sfig .torso,.sfig .limb{stroke:var(--chalk);stroke-width:5;stroke-linecap:round;fill:none;}
-  .sfig .head{stroke:var(--chalk);stroke-width:4.5;fill:var(--court);}
+  .sfig .arm{stroke:#e3a06d;stroke-width:9;stroke-linecap:round;fill:none;}
+  .sfig .leg{stroke:#e3a06d;stroke-width:10;stroke-linecap:round;fill:none;}
+  .sfig .hand{fill:#e3a06d;}
+  .sfig .shoe{fill:#f4f6f1;stroke:#b9c0b7;stroke-width:1;}
+  .sfig .jersey{fill:#ffd23f;stroke:#c9a41e;stroke-width:1.5;stroke-linejoin:round;}
+  .sfig .collar{fill:none;stroke:#c9a41e;stroke-width:2;stroke-linecap:round;}
+  .sfig .shorts{fill:#16382d;stroke:#0c1f1a;stroke-width:1;stroke-linejoin:round;}
+  .sfig .head{fill:#e3a06d;stroke:#c2895a;stroke-width:1;}
+  .sfig .hair{fill:#37291c;}
+  .sfig .eye{fill:#15201c;}
+  .sfig .mouth{fill:none;stroke:#15201c;stroke-width:1.6;stroke-linecap:round;}
   .limb{transform-box:view-box;}
   .armL{transform-origin:100px 50px;transform:rotate(-22deg);}
   .armR{transform-origin:100px 50px;transform:rotate(22deg);}
@@ -225,10 +234,10 @@
   .a-veer{animation:veerBall 2.6s ease-in-out infinite;}
   @keyframes veerBall{0%,10%{left:30%;bottom:42px;}34%{left:50%;bottom:40px;}46%{left:56%;bottom:46px;}72%,86%{left:70%;bottom:96px;}100%{left:30%;bottom:42px;}}
 
-  /* defender figure (static, dimmed) */
-  .figwrap.deffig{opacity:.5;}
-  .figwrap.deffig .torso,.figwrap.deffig .limb{stroke:var(--chalk-dim);}
-  .figwrap.deffig .head{stroke:var(--chalk-dim);}
+  /* defender figure (blue jersey, dimmed) */
+  .figwrap.deffig{opacity:.6;}
+  .figwrap.deffig .jersey{fill:#5aa9e6;stroke:#3a7bb0;}
+  .figwrap.deffig .hair{fill:#241c12;}
   .figwrap.deffig .armL{transform:rotate(-58deg);}.figwrap.deffig .armR{transform:rotate(58deg);}
   .figwrap.deffig .legL{transform:rotate(-20deg);}.figwrap.deffig .legR{transform:rotate(20deg);}
 
@@ -595,12 +604,17 @@ function drillChip(d,i){
 }
 // Reusable articulated stick figure (limbs pivot at shoulders/hips via CSS).
 const SFIG='<svg class="sfig" viewBox="0 0 200 170" aria-hidden="true">'+
-  '<line class="limb legL" x1="100" y1="96" x2="100" y2="150"/>'+
-  '<line class="limb legR" x1="100" y1="96" x2="100" y2="150"/>'+
-  '<line class="torso" x1="100" y1="50" x2="100" y2="96"/>'+
-  '<line class="limb armL" x1="100" y1="50" x2="100" y2="86"/>'+
-  '<line class="limb armR" x1="100" y1="50" x2="100" y2="86"/>'+
-  '<circle class="head" cx="100" cy="38" r="12"/></svg>';
+  '<g class="limb legL"><line class="leg" x1="100" y1="96" x2="100" y2="148"/><ellipse class="shoe" cx="101" cy="149" rx="12" ry="6"/></g>'+
+  '<g class="limb legR"><line class="leg" x1="100" y1="96" x2="100" y2="148"/><ellipse class="shoe" cx="101" cy="149" rx="12" ry="6"/></g>'+
+  '<path class="shorts" d="M85 90 L115 90 L116 112 L104 112 L100 100 L96 112 L84 112 Z"/>'+
+  '<path class="jersey" d="M85 53 Q100 47 115 53 L113 94 Q100 99 87 94 Z"/>'+
+  '<path class="collar" d="M94 50 Q100 56 106 50"/>'+
+  '<g class="limb armL"><line class="arm" x1="100" y1="52" x2="100" y2="85"/><circle class="hand" cx="100" cy="87" r="6"/></g>'+
+  '<g class="limb armR"><line class="arm" x1="100" y1="52" x2="100" y2="85"/><circle class="hand" cx="100" cy="87" r="6"/></g>'+
+  '<circle class="head" cx="100" cy="36" r="15"/>'+
+  '<path class="hair" d="M85 34 Q86 18 100 18 Q114 18 115 34 Q110 26 100 26 Q90 26 85 34 Z"/>'+
+  '<circle class="eye" cx="95" cy="36" r="1.8"/><circle class="eye" cx="105" cy="36" r="1.8"/>'+
+  '<path class="mouth" d="M96 43 Q100 46 104 43"/></svg>';
 function dScene(drill,props){ return `<div class="dc"><div class="dfloor"></div>${props||""}<div class="figwrap ${drill}">${SFIG}</div></div>`; }
 
 // Animated demo scenes + short coaching cues (Option 1).
