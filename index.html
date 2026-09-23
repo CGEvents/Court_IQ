@@ -298,6 +298,11 @@
   .mwrist{transform-box:view-box;transform-origin:78px 52px;animation:cookie 2s ease-in-out infinite;}
   @keyframes cookie{0%,18%{transform:rotate(8deg);}48%,72%{transform:rotate(-60deg);}100%{transform:rotate(8deg);}}
 
+  /* terminology court diagrams */
+  .courtwrap{background:rgba(8,20,16,.4);border:1px solid rgba(47,158,84,.2);border-radius:12px;padding:10px;}
+  .court{width:100%;max-width:290px;height:auto;display:block;margin:0 auto;}
+  .termlegend{font-size:11px;color:var(--chalk-dim);text-align:center;margin-top:8px;}
+
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
 </style>
 </head>
@@ -565,6 +570,7 @@ const IC={
   spark:c=>`<svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3 L13.5 9 L19 10.5 L13.5 12 L12 18 L10.5 12 L5 10.5 L10.5 9 Z" fill="${c}"/></svg>`,
   save:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4 H16 L19 7 V20 H5 Z"/><path d="M8 4 V9 H15 M8 20 V14 H16 V20"/></svg>`,
   aim:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1 V4 M12 20 V23 M1 12 H4 M20 12 H23"/></svg>`,
+  book:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4 H16 A3 3 0 0 1 19 7 V20 H8 A3 3 0 0 1 5 17 Z"/><path d="M5 17 A3 3 0 0 1 8 14 H19"/><path d="M9 8 H15"/></svg>`,
 };
 
 // =================== DRILL ANIMATIONS (icons, chips, demos) ================
@@ -664,6 +670,7 @@ function render(){
   if(screen==="hub") renderHub();
   else if(screen==="coach") renderCoach();
   else if(screen==="mechanics") renderMechanics();
+  else if(screen==="terms") renderTerms();
   else if(screen==="picker") renderPicker();
   else if(screen==="reframe") renderReframe();
   else if(screen==="review") renderReview();
@@ -717,6 +724,7 @@ function renderHub(){
   const tiles=[
     {s:"coach",ic:IC.chat("#2f9e54"),col:"#2f9e54",t:"AI Coach",d:"Chat about your game, get a pep talk or tip"},
     {s:"mechanics",ic:IC.aim("#f59e3c"),col:"#f59e3c",t:"Shot Mechanics",d:"Build perfect shooting form, step by step"},
+    {s:"terms",ic:IC.book("#9d7bff"),col:"#9d7bff",t:"Terminology",d:"Ask what any term means — with a coach's diagram"},
     {s:"picker",ic:IC.dice("#5aa9e6"),col:"#5aa9e6",t:"What Should I Train?",d:"Smart pick for today, based on your week"},
     {s:"reframe",ic:IC.flip("#ffd23f"),col:"#ffd23f",t:"Flip My Thinking",d:"Type what's bugging you — flip it around"},
     {s:"progress",ic:IC.chart("#e8743c"),col:"#e8743c",t:"My Progress",d:"Charts of your bests, plus log a new record"},
@@ -793,6 +801,95 @@ function renderMechanics(){
     ${mechCard("4 · Routine","Free-throw routine",dScene("shoot",'<div class="drim" style="right:26px;top:56px"></div><div class="dnet" style="right:29px;top:60px"></div><div class="dball a-shot"></div>'),["Same routine every time — that's what builds confidence.","Line your shooting foot up with the middle of the rim.","Three dribbles, deep breath, eyes on the back of the rim.","Up smooth, snap the wrist, hold the cookie jar."])}
     <p class="note">Start slow and close to the basket — perfect reps build a perfect shot. Beat your free-throw best in My Progress!</p>`;
 }
+
+// ================= TERMINOLOGY (glossary + coach diagrams) =================
+function O(x,y,n){return `<circle cx="${x}" cy="${y}" r="11" fill="#e8743c" stroke="#b8531f" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#0a1512">${n}</text>`;}
+function DX(x,y){return `<g stroke="#5aa9e6" stroke-width="3" stroke-linecap="round"><line x1="${x-8}" y1="${y-8}" x2="${x+8}" y2="${y+8}"/><line x1="${x-8}" y1="${y+8}" x2="${x+8}" y2="${y-8}"/></g>`;}
+function BALL(x,y){return `<circle cx="${x}" cy="${y}" r="4.5" fill="#e8743c" stroke="#0a1512" stroke-width="1"/>`;}
+function cutA(d){return `<path d="${d}" fill="none" stroke="#f4f6f1" stroke-width="2.5" stroke-linecap="round" marker-end="url(#tah)"/>`;}
+function passA(d){return `<path d="${d}" fill="none" stroke="#ffd23f" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round" marker-end="url(#tah)"/>`;}
+function screenBar(x1,y1,x2,y2){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#f4f6f1" stroke-width="3.5" stroke-linecap="round"/>`;}
+function spot(x,y){return `<circle cx="${x}" cy="${y}" r="14" fill="rgba(255,210,63,.28)" stroke="#ffd23f" stroke-width="2.5"/>`;}
+function zoneRect(x,y,w,h){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(255,210,63,.22)" stroke="#ffd23f" stroke-width="2.5" rx="2"/>`;}
+function courtSVG(overlay){return '<svg viewBox="0 0 300 300" class="court" aria-hidden="true"><defs><marker id="tah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="context-stroke" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect x="20" y="20" width="260" height="264" rx="5" fill="rgba(8,20,16,.5)" stroke="#2f9e54" stroke-width="2"/><rect x="115" y="20" width="70" height="92" fill="none" stroke="#2f9e54" stroke-width="1.5"/><circle cx="150" cy="112" r="30" fill="none" stroke="#2f9e54" stroke-width="1.5"/><line x1="132" y1="30" x2="168" y2="30" stroke="#e85b5b" stroke-width="2.5"/><circle cx="150" cy="37" r="6" fill="none" stroke="#e85b5b" stroke-width="2"/><path d="M42 20 L42 66 A110 110 0 0 0 258 66 L258 20" fill="none" stroke="#2f9e54" stroke-width="1.5"/>'+overlay+'</svg>';}
+
+const D_FLEX=courtSVG(screenBar(102,68,102,94)+cutA("M196 92 Q158 108 130 88")+passA("M150 240 Q116 152 124 94")+O(112,84,"5")+O(205,86,"2")+O(150,250,"1")+BALL(163,247));
+const D_PNR=courtSVG(screenBar(116,206,138,206)+cutA("M150 238 Q116 196 98 150")+cutA("M130 202 Q142 130 150 58")+O(128,216,"5")+O(150,250,"1")+BALL(163,247));
+const D_GG=courtSVG(passA("M94 208 L186 208")+cutA("M80 198 Q112 120 150 56")+passA("M196 200 Q176 122 158 62")+O(80,210,"1")+O(200,210,"2")+BALL(93,207));
+const D_BD=courtSVG(DX(224,196)+cutA("M236 166 Q212 112 168 62")+passA("M162 244 Q174 150 174 78")+O(236,178,"2")+O(150,250,"1")+BALL(163,247));
+
+const TERMS={
+  flexcut:{name:"Flex cut",aliases:["flex cut","flex","flex screen"],diagram:D_FLEX,def:"A hard cut across the lane where you rub off a teammate's baseline screen to get open for a layup. It's the signature action of the Flex offence — read the screen and cut straight to the rim."},
+  pnr:{name:"Pick & roll",aliases:["pick and roll","pick n roll","pick-and-roll","ball screen","pnr","screen and roll"],diagram:D_PNR,def:"Two players combine: one sets a screen (the 'pick') on the ball-handler's defender, then cuts to the basket (the 'roll') for a pass. It's the most common play in basketball because it forces defenders into tough choices."},
+  giveandgo:{name:"Give-and-go",aliases:["give and go","give-and-go","give n go"],diagram:D_GG,def:"Pass to a teammate (the 'give'), then immediately sprint to the basket (the 'go') for a return pass and an easy score. Simple, old-school, and almost unstoppable when the timing is right."},
+  backdoor:{name:"Backdoor cut",aliases:["backdoor","back door","backdoor cut","back cut"],diagram:D_BD,def:"When your defender overplays you to deny a pass, you cut sharply behind them to the basket for a surprise pass and layup. It punishes defenders who over-commit."},
+  boxout:{name:"Box out",aliases:["box out","boxout","block out"],def:"Using your body to seal an opponent behind you so you can grab the rebound. Turn, make contact, and hold your ground — most rebounds are won by effort, not height."},
+  tripthreat:{name:"Triple threat",aliases:["triple threat","triple-threat"],def:"A balanced stance holding the ball where you can shoot, pass, or dribble — all three threats at once. It keeps the defence guessing and starts almost every move."},
+  iso:{name:"Isolation (iso)",aliases:["isolation","iso"],def:"Clearing teammates out to one side so an attacker can go one-on-one against a single defender in space."},
+  postup:{name:"Post up",aliases:["post up","posting up","post"],def:"Setting up close to the basket with your back to the rim, sealing your defender to receive a pass and score inside."},
+  fastbreak:{name:"Fast break",aliases:["fast break","fastbreak","break","transition"],def:"Pushing the ball up the court quickly after a rebound or steal to score before the defence can get set."},
+  crossover:{name:"Crossover",aliases:["crossover","cross over"],def:"A dribble move where you quickly switch the ball from one hand to the other to change direction and beat your defender."},
+  zone:{name:"Zone defence",aliases:["zone","zone defence","zone defense"],def:"A defence where each player guards an area of the court rather than a specific opponent."},
+  man:{name:"Man-to-man",aliases:["man to man","man-to-man","man defence","man defense"],def:"A defence where each player guards one specific opponent the whole way down the floor."},
+  doubleteam:{name:"Double team",aliases:["double team","double-team","trap"],def:"Two defenders guarding one attacker at once to force a turnover or a rushed pass."},
+  press:{name:"Full-court press",aliases:["press","full court press","full-court press"],def:"Applying defensive pressure across the whole court, not just near your basket, to speed up and rattle the opponent."},
+  andone:{name:"And-one",aliases:["and one","and-one","and1"],def:"When you get fouled while scoring, the basket counts and you get one free throw — a chance to turn two points into three."},
+  pickpop:{name:"Pick & pop",aliases:["pick and pop","pick-and-pop","pick n pop"],def:"Like a pick & roll, but after screening, the screener steps back out for a jump shot instead of rolling to the rim."},
+  paint:{name:"The key / paint / lane",aliases:["key","paint","the paint","the key","lane","the lane","in the paint","three second area","three-second area"],diagram:courtSVG(zoneRect(115,20,70,92)),def:"The painted rectangle from the baseline to the free-throw line, right in front of the basket. Also called the key or the lane. On offence you can only stand in it for 3 seconds at a time."},
+  nail:{name:"The nail",aliases:["nail","the nail"],diagram:courtSVG(spot(150,112)),def:"The exact middle of the free-throw line. Defenders sit here to help on drives up the middle; offences attack it to split the defence."},
+  elbow:{name:"The elbows",aliases:["elbow","elbows","the elbow","the elbows"],diagram:courtSVG(spot(116,112)+spot(184,112)),def:"The two corners where the free-throw line meets the lane. A great spot for a pull-up jumper or to run offence from the high post."},
+  wing:{name:"The wings",aliases:["wing","wings","the wing","the wings"],diagram:courtSVG(spot(62,150)+spot(238,150)),def:"The areas out on the three-point line on each side, roughly level with the free-throw line. Most offences start with the ball on the wing."},
+  corner:{name:"The corners",aliases:["corner","corners","the corner","the corners","corner three","corner 3"],diagram:courtSVG(spot(42,58)+spot(258,58)),def:"The baseline spots just inside the sideline, behind the three-point line. The corner three is the shortest three-pointer on the floor."},
+  shortcorner:{name:"Short corner / dunker spot",aliases:["short corner","dunker spot","dunker"],diagram:courtSVG(spot(102,52)+spot(198,52)),def:"The baseline area just outside the lane, closer in than the corner. A prime spot for bigs to catch and finish — the 'dunker spot'."},
+  coffincorner:{name:"Coffin corner",aliases:["coffin corner","coffin"],diagram:courtSVG(spot(44,46)),def:"The tight spot right in the corner, boxed in by the baseline and the sideline. Defences try to trap ball-handlers here because there's nowhere to go — never pick up your dribble in the coffin corner."},
+  topkey:{name:"Top of the key",aliases:["top of the key","top of key","the top","top"],diagram:courtSVG(spot(150,142)),def:"The area at the top of the three-point arc, straight out from the basket. The main spot to run offence from and to reverse the ball."},
+  slot:{name:"The slots",aliases:["slot","slots","the slot","the slots"],diagram:courtSVG(spot(108,178)+spot(192,178)),def:"The two spots between the top of the key and the wings. Great launch points for driving gaps or swinging the ball."},
+  block:{name:"The block / low post",aliases:["block","blocks","the block","on the block","low post","low-post"],diagram:courtSVG(spot(116,72)+spot(184,72)),def:"The marked blocks on the side of the lane next to the basket. This is where post players seal up to score close to the rim (the low post)."},
+  highpost:{name:"High post",aliases:["high post","high-post"],diagram:courtSVG(spot(150,98)),def:"The area near the free-throw line, inside the arc. A smart passing and scoring spot for skilled bigs who face up to the basket."},
+  seams:{name:"Seams / gaps",aliases:["seam","seams","gap","gaps","the seams"],def:"The spaces between defenders, especially in a zone. Attacking the seams — dribbling or passing into the gaps — makes two defenders guard you and frees up a teammate."},
+};
+function findTerm(q){
+  const t=(q||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+  if(!t) return null;
+  for(const k in TERMS){ const e=TERMS[k]; const names=[e.name].concat(e.aliases||[]).map(s=>s.toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim()); if(names.includes(t)) return e; }
+  for(const k in TERMS){ const e=TERMS[k]; const names=[e.name].concat(e.aliases||[]).map(s=>s.toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim()); if(names.some(n=>n&&(t.includes(n)||n.includes(t)))) return e; }
+  return null;
+}
+let termState={q:"",result:null};
+function termResultHTML(r){
+  return `<div class="card reveal" style="margin-top:16px">
+    <div style="font-weight:900;font-size:19px;margin-bottom:${r.diagram?'10px':'6px'}">${esc(r.name)}</div>
+    ${r.diagram?`<div class="courtwrap">${r.diagram}</div><div class="termlegend">O = attacker · × = defender · solid = cut/drive · dashed = pass</div>`:""}
+    <div style="font-size:14.5px;line-height:1.6;margin-top:${r.diagram?'12px':'2px'}">${esc(r.def)}</div>
+    ${r.ai?`<p class="note" style="text-align:left;margin-top:10px">Explained by Coach IQ — no diagram for this one yet.</p>`:""}
+  </div>`;
+}
+function renderTerms(){
+  app.innerHTML=topbar()+backbar("Terminology")+`
+    <p style="color:var(--chalk-dim);font-size:14.5px;margin:2px 2px 14px">Not sure what a word means? Ask any basketball term and I'll explain it — with a coach's diagram where I have one. 📋</p>
+    <div style="display:flex;gap:8px">
+      <input id="termin" class="txt" placeholder="e.g. flex cut, pick and roll…" style="flex:1" onkeydown="if(event.key==='Enter')askTerm()">
+      <button class="btn-primary" style="padding:0 18px" onclick="askTerm()">Ask</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 2px">
+      ${["Flex cut","Pick & roll","Give-and-go","The key","Wing","The nail","Coffin corner","Box out"].map(q=>`<button class="quick" onclick="askTerm('${q.replace(/'/g,"\\'")}')">${q}</button>`).join("")}
+    </div>
+    <div id="termresult">${termState.result?termResultHTML(termState.result):""}</div>
+    <p class="note" style="margin-top:20px">Diagrams use standard coaching notation. Ask me anything — if I don't have a diagram, Coach IQ will still explain it.</p>`;
+  const el=$("#termin"); if(el&&termState.q){el.value=termState.q;}
+}
+window.askTerm=async(q)=>{
+  const inp=$("#termin"); const t=(q||(inp?inp.value:"")).trim(); if(!t)return;
+  termState.q=t;
+  const found=findTerm(t);
+  if(found){ termState.result={name:found.name,def:found.def,diagram:found.diagram}; renderTerms(); return; }
+  termState.result=null; renderTerms();
+  const rd=$("#termresult"); if(rd) rd.innerHTML=`<div class="card" style="margin-top:16px;text-align:center;color:var(--chalk-dim)"><div style="font-size:30px">📋</div><p style="margin-top:8px">Looking that up<span class="dots"></span></p></div>`;
+  let reply=await aiOrNull(`Explain the basketball term "${t}" simply for a young player, in 2-3 short sentences. If it is not a real basketball term, gently say you are not sure.`);
+  if(reply){ termState.result={name:t.replace(/\b\w/g,c=>c.toUpperCase()),def:reply,ai:true}; }
+  else { termState.result={name:t,def:"I don't have that one yet, and I can't reach Coach IQ right now. Try one of the terms above, or check your internet connection.",ai:true}; }
+  renderTerms();
+};
 
 // ================= PROGRESS (charts + log a best) =================
 function sparkline(points,opts){
