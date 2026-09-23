@@ -1,1 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Court IQ — Basketball Hub</title>
+<style>
+  :root{
+    --court:#0c1f1a;--court2:#10302a;--line:#1f7a3d;--line-soft:#2f9e54;
+    --chalk:#f4f6f1;--chalk-dim:#aebcb2;--flash:#ffd23f;--ink:#0a1512;
+    --ball:#e8743c;--ball-dark:#b8531f;--hot:#e85b5b;--blue:#5aa9e6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:radial-gradient(120% 80% at 50% -10%,var(--court2),var(--court) 60%);color:var(--chalk);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 18px 90px;}
+  button{font-family:inherit;}
+  input,textarea{font-family:inherit;}
+  input:focus,textarea:focus{outline:2px solid var(--flash);outline-offset:1px;}
+  button:focus-visible{outline:2px solid var(--flash);outline-offset:2px;}
 
+  .hidden{display:none !important;}
+  .eyebrow{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--line-soft);font-weight:700;margin-bottom:10px;}
+  .sectlabel{font-size:12px;color:var(--line-soft);font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin:0 2px 12px;}
+  h1.brand{font-size:clamp(46px,14vw,76px);line-height:.9;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;text-align:center;}
+  h1.brand .w{background:linear-gradient(180deg,var(--chalk),var(--chalk-dim));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  h1.brand .a{color:var(--flash);}
+
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .avatar{width:38px;height:38px;border-radius:10px;background:rgba(31,122,61,.2);display:flex;align-items:center;justify-content:center;}
+  .pill{cursor:pointer;background:rgba(8,20,16,.6);color:var(--chalk-dim);border:1px solid rgba(47,158,84,.3);border-radius:20px;font-size:12.5px;font-weight:700;padding:8px 14px;}
+  .mode-badge{font-size:10.5px;font-weight:800;letter-spacing:.05em;padding:3px 9px;border-radius:20px;border:1px solid;}
+  .mode-off{color:var(--chalk-dim);border-color:rgba(174,188,178,.4);}
+  .mode-live{color:var(--flash);border-color:rgba(255,210,63,.5);}
+
+  .stats{display:flex;gap:12px;margin:16px 0 22px;}
+  .stat{flex:1;background:rgba(8,20,16,.5);border:1px solid rgba(47,158,84,.25);border-radius:16px;padding:16px 8px;text-align:center;}
+  .stat .big{font-size:28px;font-weight:900;}
+  .stat .lbl{font-size:11.5px;color:var(--chalk-dim);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+  .tile{cursor:pointer;text-align:left;border-radius:18px;padding:18px;color:var(--chalk);display:flex;align-items:center;gap:16px;width:100%;border:1px solid;margin-bottom:12px;transition:transform .12s;}
+  .tile:active{transform:scale(.99);}
+  .tile .ic{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .tile .tt{font-weight:900;font-size:18px;}
+  .tile .ts{color:var(--chalk-dim);font-size:13.5px;margin-top:2px;}
+
+  .card{background:rgba(8,20,16,.5);border:1px solid rgba(47,158,84,.25);border-radius:18px;padding:20px;}
+  .backbar{display:flex;align-items:center;gap:10px;margin:4px 0 12px;}
+  .backbtn{background:rgba(8,20,16,.6);border:1px solid rgba(47,158,84,.3);border-radius:12px;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .backbar .ttl{font-size:23px;font-weight:900;}
+
+  input.txt,textarea.txt{width:100%;font-size:15px;padding:13px 16px;border-radius:12px;border:1px solid rgba(47,158,84,.45);background:rgba(8,20,16,.6);color:var(--chalk);}
+  textarea.txt{resize:vertical;}
+  .btn-primary{cursor:pointer;background:var(--flash);color:var(--ink);border:none;font-weight:800;font-size:15px;padding:13px 22px;border-radius:30px;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-ghost{cursor:pointer;background:transparent;color:var(--chalk-dim);border:1px solid rgba(47,158,84,.3);font-weight:700;font-size:14px;padding:11px;border-radius:30px;width:100%;}
+  .quick{cursor:pointer;background:rgba(8,20,16,.6);color:var(--chalk-dim);border:1px solid rgba(47,158,84,.3);border-radius:20px;font-size:12.5px;font-weight:700;padding:8px 14px;}
+
+  .bubble-row{display:flex;margin-bottom:12px;}
+  .bubble{max-width:82%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.5;}
+  .bubble.me{margin-left:auto;background:var(--line);border-bottom-right-radius:4px;}
+  .bubble.coach{background:rgba(8,20,16,.6);border:1px solid rgba(47,158,84,.3);border-bottom-left-radius:4px;}
+  .bubble .who{font-size:11px;font-weight:800;color:var(--line-soft);margin-bottom:3px;}
+
+  .opt-row{display:flex;gap:8px;margin-bottom:8px;}
+  .opt{flex:1;cursor:pointer;background:rgba(8,20,16,.5);color:var(--chalk-dim);border:1px solid rgba(47,158,84,.25);border-radius:12px;font-size:12.5px;font-weight:700;padding:11px 6px;text-align:center;}
+  .opt.on{background:var(--line);color:var(--chalk);border-color:var(--line-soft);}
+
+  .badge{border-radius:14px;padding:14px 6px;text-align:center;}
+  .badge .em{font-size:26px;}
+  .badge .bl{font-size:11px;font-weight:700;margin-top:5px;}
+  .toast{position:fixed;left:50%;top:24px;transform:translateX(-50%);z-index:100;background:var(--flash);color:var(--ink);font-weight:800;padding:12px 22px;border-radius:30px;font-size:14.5px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:pop .3s ease;}
+  @keyframes pop{from{transform:translateX(-50%) scale(.85);opacity:0;}to{transform:translateX(-50%) scale(1);opacity:1;}}
+  .reveal{animation:pop .35s ease;}
+  .note{font-size:11.5px;color:var(--chalk-dim);text-align:center;margin-top:22px;line-height:1.6;}
+  .dots::after{content:"…";animation:blink 1.2s infinite;}
+  @keyframes blink{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+  /* ---- Animations: UI motion, drill icons & demos ---- */
+  @keyframes chipIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .ci{animation:chipIn .5s ease backwards;}
+  .btn-primary,.quick,.pill,.opt,.backbtn,.btn-ghost{transition:transform .1s ease;}
+  .btn-primary:active,.quick:active,.pill:active,.opt:active,.backbtn:active,.btn-ghost:active{transform:scale(.95);}
+
+  .drillchip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;background:rgba(8,20,16,.55);border:1px solid rgba(47,158,84,.3);border-radius:20px;padding:5px 11px;color:var(--chalk);}
+  .drillchip.tap{cursor:pointer;}
+  .drillchip .pd{font-size:8.5px;color:var(--flash);}
+
+  /* small looping icons beside drills (Option 3) */
+  .dico{width:14px;height:14px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;}
+  .dico.ball{border-radius:50%;background:var(--ball);animation:icoBounce .8s cubic-bezier(.5,0,.5,1) infinite alternate;}
+  @keyframes icoBounce{0%{transform:translateY(-3px);}100%{transform:translateY(2px);}}
+  .dico.spin{border-radius:50%;background:var(--blue);position:relative;animation:icoSpin 1.4s linear infinite;}
+  .dico.spin::before{content:"";position:absolute;left:50%;top:1px;bottom:1px;width:1.5px;margin-left:-.75px;background:rgba(8,20,16,.6);}
+  @keyframes icoSpin{to{transform:rotate(360deg);}}
+  .dico.arrow{color:var(--flash);font-size:14px;line-height:1;font-weight:900;animation:icoArrow 1.2s ease-in-out infinite;}
+  @keyframes icoArrow{0%,100%{opacity:.35;transform:translateX(0);}50%{opacity:1;transform:translateX(3px);}}
+  .dico.up{background:var(--line-soft);border-radius:3px;animation:icoUp 1s ease-in-out infinite;}
+  @keyframes icoUp{0%,100%{transform:translateY(2px) scaleY(.9);}50%{transform:translateY(-3px) scaleY(1.05);}}
+
+  /* drill demo overlay (Option 1) */
+  .overlay{position:fixed;inset:0;background:rgba(4,10,8,.82);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeIn .2s ease;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .sheet{background:var(--court2);border:1px solid rgba(47,158,84,.5);border-radius:20px;max-width:380px;width:100%;padding:20px;animation:sheetUp .28s ease;}
+  @keyframes sheetUp{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .dc{position:relative;height:174px;background:rgba(8,20,16,.6);border:1px solid rgba(47,158,84,.25);border-radius:12px;overflow:hidden;margin:10px 0 16px;}
+  .dfloor{position:absolute;left:6%;right:6%;bottom:16px;height:2px;background:rgba(47,158,84,.4);}
+  .dball{position:absolute;width:17px;height:17px;border-radius:50%;background:var(--ball);border:1.5px solid var(--ball-dark);z-index:4;}
+  .dball::before{content:"";position:absolute;left:50%;top:1px;bottom:1px;width:1.5px;margin-left:-.75px;background:var(--ball-dark);}
+  .dball::after{content:"";position:absolute;top:50%;left:1px;right:1px;height:1.5px;margin-top:-.75px;background:var(--ball-dark);}
+  .drim{position:absolute;width:26px;height:4px;background:var(--hot);border-radius:2px;z-index:2;}
+  .dnet{position:absolute;width:20px;height:15px;border:1px solid rgba(244,246,241,.45);border-top:none;border-radius:0 0 8px 8px;z-index:2;}
+  .dcone{position:absolute;bottom:16px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:15px solid var(--flash);}
+
+  /* articulated stick figure */
+  .figwrap{position:absolute;left:50%;margin-left:-55px;bottom:12px;width:110px;height:158px;z-index:3;}
+  .figwrap.shoot,.figwrap.layup,.figwrap.pass{left:35%;}
+  .sfig{width:100%;height:100%;overflow:visible;}
+  .sfig .arm{stroke:#e3a06d;stroke-width:9;stroke-linecap:round;fill:none;}
+  .sfig .leg{stroke:#e3a06d;stroke-width:10;stroke-linecap:round;fill:none;}
+  .sfig .hand{fill:#e3a06d;}
+  .sfig .shoe{fill:#f4f6f1;stroke:#b9c0b7;stroke-width:1;}
+  .sfig .jersey{fill:#ffd23f;stroke:#c9a41e;stroke-width:1.5;stroke-linejoin:round;}
+  .sfig .collar{fill:none;stroke:#c9a41e;stroke-width:2;stroke-linecap:round;}
+  .sfig .shorts{fill:#16382d;stroke:#0c1f1a;stroke-width:1;stroke-linejoin:round;}
+  .sfig .head{fill:#e3a06d;stroke:#c2895a;stroke-width:1;}
+  .sfig .hair{fill:#37291c;}
+  .sfig .eye{fill:#15201c;}
+  .sfig .mouth{fill:none;stroke:#15201c;stroke-width:1.6;stroke-linecap:round;}
+  .limb{transform-box:view-box;}
+  .armL{transform-origin:100px 50px;transform:rotate(-22deg);}
+  .armR{transform-origin:100px 50px;transform:rotate(22deg);}
+  .legL{transform-origin:100px 96px;transform:rotate(-9deg);}
+  .legR{transform-origin:100px 96px;transform:rotate(9deg);}
+
+  /* dribble */
+  .figwrap.dribble .legL{transform:rotate(-13deg);}.figwrap.dribble .legR{transform:rotate(13deg);}
+  .figwrap.dribble .armL{transform:rotate(-26deg);}
+  .figwrap.dribble .armR{animation:dribArm .55s ease-in-out infinite;}
+  @keyframes dribArm{0%,100%{transform:rotate(36deg);}50%{transform:rotate(58deg);}}
+  .a-dribble{left:54%;animation:dribBall .55s ease-in-out infinite;}
+  @keyframes dribBall{0%,100%{bottom:84px;}50%{bottom:20px;}}
+
+  /* crossover */
+  .figwrap.cross{animation:crossSway 1.4s ease-in-out infinite;}
+  @keyframes crossSway{0%,100%{transform:translateX(-9px);}50%{transform:translateX(9px);}}
+  .figwrap.cross .legL{transform:rotate(-15deg);}.figwrap.cross .legR{transform:rotate(15deg);}
+  .figwrap.cross .armL{animation:crossArmL 1.4s ease-in-out infinite;}.figwrap.cross .armR{animation:crossArmR 1.4s ease-in-out infinite;}
+  @keyframes crossArmL{0%,100%{transform:rotate(-50deg);}50%{transform:rotate(-18deg);}}
+  @keyframes crossArmR{0%,100%{transform:rotate(18deg);}50%{transform:rotate(50deg);}}
+  .a-cross{animation:crossBall 1.4s ease-in-out infinite;}
+  @keyframes crossBall{0%{left:26%;bottom:34px;}50%{left:50%;bottom:20px;}100%{left:66%;bottom:34px;}}
+
+  /* shooting */
+  .figwrap.shoot{animation:shootBody 2.4s ease-in-out infinite;}
+  @keyframes shootBody{0%,100%{transform:translateY(0);}22%{transform:translateY(9px);}54%{transform:translateY(-7px);}}
+  .figwrap.shoot .armL{animation:shArmL 2.4s ease-in-out infinite;}
+  @keyframes shArmL{0%,100%{transform:rotate(-22deg);}22%{transform:rotate(-6deg);}52%,68%{transform:rotate(-162deg);}}
+  .figwrap.shoot .armR{animation:shArmR 2.4s ease-in-out infinite;}
+  @keyframes shArmR{0%,100%{transform:rotate(22deg);}22%{transform:rotate(6deg);}52%,68%{transform:rotate(162deg);}}
+  .figwrap.shoot .legL{animation:shLegL 2.4s ease-in-out infinite;}
+  @keyframes shLegL{0%,100%{transform:rotate(-9deg);}22%{transform:rotate(-15deg);}54%{transform:rotate(-5deg);}}
+  .figwrap.shoot .legR{animation:shLegR 2.4s ease-in-out infinite;}
+  @keyframes shLegR{0%,100%{transform:rotate(9deg);}22%{transform:rotate(15deg);}54%{transform:rotate(5deg);}}
+  .a-shot{offset-path:path('M118 56 Q205 -28 300 64');animation:shotBall 2.4s ease-in infinite;}
+  @keyframes shotBall{0%,24%{offset-distance:0%;opacity:1;}56%{offset-distance:100%;opacity:1;}59%{opacity:0;}99%{opacity:0;}100%{offset-distance:0%;opacity:0;}}
+
+  /* layups & finishing */
+  .figwrap.layup{animation:jumpBody 1.9s cubic-bezier(.3,0,.4,1) infinite;}
+  .figwrap.layup .armR{animation:shArmR 1.9s ease-in-out infinite;}
+  .figwrap.layup .armL{transform:rotate(-30deg);}
+  .a-layup{offset-path:path('M120 64 Q210 6 300 52');animation:shotBall 1.9s ease-in infinite;}
+
+  /* defensive slide */
+  .figwrap.slide{animation:slideBody 2s ease-in-out infinite;}
+  @keyframes slideBody{0%{transform:translate(-36px,12px);}50%{transform:translate(36px,12px);}100%{transform:translate(-36px,12px);}}
+  .figwrap.slide .armL{transform:rotate(-74deg);}.figwrap.slide .armR{transform:rotate(74deg);}
+  .figwrap.slide .legL{transform:rotate(-30deg);}.figwrap.slide .legR{transform:rotate(30deg);}
+
+  /* jumps & landings */
+  .figwrap.jump{animation:jumpBody 1.7s cubic-bezier(.3,0,.4,1) infinite;}
+  @keyframes jumpBody{0%,12%{transform:translateY(14px);}46%,66%{transform:translateY(-34px);}100%{transform:translateY(0);}}
+  .figwrap.jump .armL{animation:jumpArmL 1.7s ease-in-out infinite;}
+  @keyframes jumpArmL{0%,12%{transform:rotate(10deg);}46%{transform:rotate(-150deg);}100%{transform:rotate(-22deg);}}
+  .figwrap.jump .armR{animation:jumpArmR 1.7s ease-in-out infinite;}
+  @keyframes jumpArmR{0%,12%{transform:rotate(-10deg);}46%{transform:rotate(150deg);}100%{transform:rotate(22deg);}}
+  .figwrap.jump .legL{animation:jumpLegL 1.7s ease-in-out infinite;}
+  @keyframes jumpLegL{0%,12%{transform:rotate(-17deg);}46%{transform:rotate(-6deg);}100%{transform:rotate(-9deg);}}
+  .figwrap.jump .legR{animation:jumpLegR 1.7s ease-in-out infinite;}
+  @keyframes jumpLegR{0%,12%{transform:rotate(17deg);}46%{transform:rotate(6deg);}100%{transform:rotate(9deg);}}
+
+  /* passing */
+  .figwrap.pass .armL{animation:passArmL 1.6s ease-in-out infinite;}
+  @keyframes passArmL{0%,100%{transform:rotate(-22deg);}38%,58%{transform:rotate(76deg);}}
+  .figwrap.pass .armR{animation:passArmR 1.6s ease-in-out infinite;}
+  @keyframes passArmR{0%,100%{transform:rotate(22deg);}38%,58%{transform:rotate(82deg);}}
+  .a-pass{top:72px;animation:passBall 1.6s ease-in-out infinite;}
+  @keyframes passBall{0%,38%{left:46%;opacity:0;}43%{opacity:1;}100%{left:86%;opacity:1;}}
+
+  /* speed & reactions (run in place) */
+  .figwrap.sprint{animation:runBob .5s ease-in-out infinite;}
+  @keyframes runBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+  .figwrap.sprint .legL{animation:runLegL .5s linear infinite;}.figwrap.sprint .legR{animation:runLegR .5s linear infinite;}
+  .figwrap.sprint .armL{animation:runArmL .5s linear infinite;}.figwrap.sprint .armR{animation:runArmR .5s linear infinite;}
+  @keyframes runLegL{0%{transform:rotate(30deg);}50%{transform:rotate(-30deg);}100%{transform:rotate(30deg);}}
+  @keyframes runLegR{0%{transform:rotate(-30deg);}50%{transform:rotate(30deg);}100%{transform:rotate(-30deg);}}
+  @keyframes runArmL{0%{transform:rotate(-34deg);}50%{transform:rotate(22deg);}100%{transform:rotate(-34deg);}}
+  @keyframes runArmR{0%{transform:rotate(34deg);}50%{transform:rotate(-22deg);}100%{transform:rotate(34deg);}}
+
+  /* mikan */
+  .figwrap.mikan{animation:jumpBody 1.4s cubic-bezier(.3,0,.4,1) infinite;}
+  .figwrap.mikan .armL{animation:jumpArmL 1.4s ease-in-out infinite;}
+  .figwrap.mikan .armR{animation:jumpArmR 1.4s ease-in-out infinite;}
+  .a-mikan{animation:mikBall 1.4s ease-in-out infinite;}
+  @keyframes mikBall{0%{left:40%;bottom:54px;}46%{left:50%;bottom:118px;}100%{left:60%;bottom:54px;}}
+
+  /* rip & drive */
+  .figwrap.rip{animation:ripBody 1.8s ease-in-out infinite;}
+  @keyframes ripBody{0%,100%{transform:translateX(-7px);}55%{transform:translateX(9px);}}
+  .figwrap.rip .armL{animation:ripArm 1.8s ease-in-out infinite;}.figwrap.rip .armR{animation:ripArm 1.8s ease-in-out infinite;}
+  @keyframes ripArm{0%,100%{transform:rotate(-50deg);}50%{transform:rotate(42deg);}}
+  .figwrap.rip .legL{transform:rotate(-14deg);}.figwrap.rip .legR{transform:rotate(14deg);}
+  .a-rip{animation:ripBall 1.8s ease-in-out infinite;}
+  @keyframes ripBall{0%,100%{left:38%;bottom:42px;}50%{left:60%;bottom:34px;}}
+
+  /* veer step — drive, bump the defender, finish */
+  .figwrap.veer{left:34%;animation:veerBody 2.6s cubic-bezier(.45,0,.35,1) infinite;}
+  @keyframes veerBody{0%,10%{transform:translate(-22px,9px) rotate(0deg);}34%{transform:translate(32px,9px) rotate(0deg);}46%{transform:translate(40px,9px) rotate(-10deg);}72%,86%{transform:translate(56px,-24px) rotate(-7deg);}100%{transform:translate(-22px,9px) rotate(0deg);}}
+  .figwrap.veer .armR{animation:veerArmR 2.6s ease-in-out infinite;}
+  @keyframes veerArmR{0%,46%{transform:rotate(42deg);}72%,86%{transform:rotate(156deg);}100%{transform:rotate(42deg);}}
+  .figwrap.veer .armL{transform:rotate(-34deg);}
+  .figwrap.veer .legL{animation:veerLegL 2.6s ease-in-out infinite;}.figwrap.veer .legR{animation:veerLegR 2.6s ease-in-out infinite;}
+  @keyframes veerLegL{0%,10%{transform:rotate(-26deg);}34%{transform:rotate(-8deg);}72%{transform:rotate(-15deg);}100%{transform:rotate(-26deg);}}
+  @keyframes veerLegR{0%,10%{transform:rotate(8deg);}34%{transform:rotate(26deg);}72%{transform:rotate(13deg);}100%{transform:rotate(8deg);}}
+  .a-veer{animation:veerBall 2.6s ease-in-out infinite;}
+  @keyframes veerBall{0%,10%{left:30%;bottom:42px;}34%{left:50%;bottom:40px;}46%{left:56%;bottom:46px;}72%,86%{left:70%;bottom:96px;}100%{left:30%;bottom:42px;}}
+
+  /* defender figure (blue jersey, dimmed) */
+  .figwrap.deffig{opacity:.6;}
+  .figwrap.deffig .jersey{fill:#5aa9e6;stroke:#3a7bb0;}
+  .figwrap.deffig .hair{fill:#241c12;}
+  .figwrap.deffig .armL{transform:rotate(-58deg);}.figwrap.deffig .armR{transform:rotate(58deg);}
+  .figwrap.deffig .legL{transform:rotate(-20deg);}.figwrap.deffig .legR{transform:rotate(20deg);}
+
+  /* up-and-under (shot fake, step through, finish) */
+  .figwrap.upunder{left:38%;animation:uuBody 2.6s cubic-bezier(.4,0,.3,1) infinite;}
+  @keyframes uuBody{0%,30%{transform:translate(0,6px);}60%,86%{transform:translate(40px,-6px);}100%{transform:translate(0,6px);}}
+  .figwrap.upunder .armR{animation:uuArm 2.6s ease-in-out infinite;}
+  @keyframes uuArm{0%{transform:rotate(40deg);}16%{transform:rotate(152deg);}32%{transform:rotate(58deg);}62%,86%{transform:rotate(150deg);}100%{transform:rotate(40deg);}}
+  .figwrap.upunder .armL{transform:rotate(-30deg);}
+  .figwrap.upunder .legL{transform:rotate(-16deg);}.figwrap.upunder .legR{transform:rotate(16deg);}
+  .a-upunder{animation:uuBall 2.6s ease-in-out infinite;}
+  @keyframes uuBall{0%{left:50%;bottom:50px;}16%{left:52%;bottom:98px;}32%{left:50%;bottom:54px;}62%,86%{left:72%;bottom:94px;}100%{left:50%;bottom:50px;}}
+
+  /* contact finishing */
+  .figwrap.contact{animation:contactBody 1.9s cubic-bezier(.3,0,.4,1) infinite;}
+  @keyframes contactBody{0%,12%{transform:translateY(14px) rotate(0deg);}46%,66%{transform:translateY(-30px) rotate(-11deg);}100%{transform:translateY(0) rotate(0deg);}}
+  .figwrap.contact .armR{animation:shArmR 1.9s ease-in-out infinite;}
+  .figwrap.contact .armL{transform:rotate(-42deg);}
+  .a-contact{offset-path:path('M120 64 Q205 6 298 50');animation:shotBall 1.9s ease-in infinite;}
+  .ddef{position:absolute;background:rgba(174,188,178,.45);border-radius:4px;}
+
+  /* post moves */
+  .figwrap.post{left:42%;animation:postBody 2s cubic-bezier(.4,0,.3,1) infinite;}
+  @keyframes postBody{0%,20%{transform:translate(0,6px);}55%,80%{transform:translate(38px,-8px);}100%{transform:translate(0,6px);}}
+  .figwrap.post .armR{animation:postArm 2s ease-in-out infinite;}
+  @keyframes postArm{0%,20%{transform:rotate(40deg);}55%,80%{transform:rotate(150deg);}100%{transform:rotate(40deg);}}
+  .figwrap.post .armL{transform:rotate(-32deg);}
+  .figwrap.post .legL{transform:rotate(-18deg);}.figwrap.post .legR{transform:rotate(18deg);}
+  .a-post{animation:postBall 2s ease-in-out infinite;}
+  @keyframes postBall{0%,20%{left:50%;bottom:48px;}55%,80%{left:72%;bottom:94px;}100%{left:50%;bottom:48px;}}
+
+  /* ===== Shot Mechanics mini-demos ===== */
+  .mc{position:relative;height:120px;background:rgba(8,20,16,.6);border:1px solid rgba(47,158,84,.25);border-radius:12px;overflow:hidden;margin:12px 0 0;}
+  .mrim{position:absolute;left:50%;top:12px;width:34px;height:11px;margin-left:-17px;border:2.5px solid var(--hot);border-bottom:none;border-radius:17px 17px 0 0;}
+  .mguide{position:absolute;left:50%;top:22px;bottom:30px;border-left:1.5px dashed rgba(255,210,63,.45);}
+  .mfoot{position:absolute;bottom:24px;width:13px;height:27px;background:var(--line-soft);border-radius:6px 6px 3px 3px;transform-origin:bottom center;}
+  .mfoot::after{content:"";position:absolute;top:-3px;left:2px;right:2px;height:5px;background:var(--chalk);border-radius:3px;}
+  .mfootL{left:calc(50% - 21px);animation:toesL 2.6s ease-in-out infinite;}
+  .mfootR{left:calc(50% + 8px);animation:toesR 2.6s ease-in-out infinite;}
+  @keyframes toesL{0%,100%{transform:rotate(-22deg);}45%,70%{transform:rotate(0deg);}}
+  @keyframes toesR{0%,100%{transform:rotate(22deg);}45%,70%{transform:rotate(0deg);}}
+  .melbowwrap{display:flex;height:100%;}
+  .mhalf{flex:1;position:relative;}
+  .mhalf+.mhalf{border-left:1px solid rgba(47,158,84,.2);}
+  .marm{width:100%;height:100%;}
+  .mbone{stroke-width:5;stroke-linecap:round;fill:none;}
+  .mbone.bad{stroke:rgba(232,91,91,.9);}
+  .mbone.good{stroke:var(--chalk);}
+  .mball{fill:var(--ball);stroke:var(--ball-dark);stroke-width:1.5;}
+  .mjoint.bad{fill:var(--hot);}.mjoint.good{fill:var(--line-soft);}
+  .mvguide{stroke:rgba(255,210,63,.6);stroke-width:1.5;stroke-dasharray:3 3;animation:vgPulse 1.8s ease-in-out infinite;}
+  @keyframes vgPulse{0%,100%{opacity:.35;}50%{opacity:.9;}}
+  .mlabel{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:10.5px;font-weight:800;}
+  .mcj{width:100%;height:100%;}
+  .mfing{stroke:var(--chalk);stroke-width:2.5;stroke-linecap:round;fill:none;}
+  .mjar{fill:none;stroke:rgba(174,188,178,.5);stroke-width:2;}
+  .mjarlid{fill:rgba(174,188,178,.15);stroke:rgba(174,188,178,.5);stroke-width:1.5;}
+  .mwrist{transform-box:view-box;transform-origin:78px 52px;animation:cookie 2s ease-in-out infinite;}
+  @keyframes cookie{0%,18%{transform:rotate(8deg);}48%,72%{transform:rotate(-60deg);}100%{transform:rotate(8deg);}}
+
+  /* terminology court diagrams */
+  .courtwrap{background:rgba(8,20,16,.4);border:1px solid rgba(47,158,84,.2);border-radius:12px;padding:10px;}
+  .court{width:100%;max-width:290px;height:auto;display:block;margin:0 auto;}
+  .termlegend{font-size:11px;color:var(--chalk-dim);text-align:center;margin-top:8px;}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="wrap" id="app"></div>
+
+<script>
+// ===========================================================================
+// COURT IQ — offline-first hybrid hub. Works with NO internet / NO Claude.
+// If opened inside Claude (window.claude.complete available), it auto-uses
+// live AI; otherwise it falls back to the built-in response banks.
+// ===========================================================================
+
+// ---- tiny helpers ----
+const $ = (sel, el=document) => el.querySelector(sel);
+const app = $("#app");
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+// ---- hosted AI layer: calls your own server (/api/coach). Falls back offline. ----
+const LIVE = true;
+async function aiOrNull(prompt){
+  try{
+    const r = await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});
+    if(!r.ok) return null;
+    const data = await r.json();
+    return (data && data.text) ? String(data.text).trim() : null;
+  }catch(e){ return null; }
+}
+
+// ---- safety net for offline typed input ----
+const RED_FLAGS = ["kill myself","suicide","want to die","end my life","hurt myself","self harm","self-harm","cutting","no reason to live","hate my life","abuse","being hit","scared at home"];
+function flaggedDistress(text){
+  const t = (text||"").toLowerCase();
+  return RED_FLAGS.some(f => t.includes(f));
+}
+const DISTRESS_REPLY = "That sounds like a lot more than basketball, and it matters more than any game. Please talk to a parent, teacher, or another adult you trust about this today — reaching out is a brave, strong move. 💚";
+
+// =================== OFFLINE RESPONSE BANKS ================================
+// Coach replies keyed by intent; chosen by keyword match.
+const COACH_BANK = {
+  rough: [
+    "Tough games happen to every great player — what matters is you showed up. Pick one thing to work on next session and let the rest go. 🏀",
+    "One rough game doesn't define you; the best pros have shockers too. Wipe it, learn one lesson, move on. You've got this.",
+    "Bad games are just data, not a verdict. Rest up, run your reset, and come back hungry next time.",
+  ],
+  pump: [
+    "Let's GO! 🔥 You put the work in — now trust it. Play free, play hard, and have fun out there.",
+    "You're built for this. Hustle on every play, back yourself, and leave it all on the court. Bring the energy!",
+    "Big effort beats big talent when talent doesn't work hard — and you DO the work. Go show it. 💪",
+  ],
+  shot: [
+    "Great shooting comes from reps and routine: same form every time, elbow in, follow through, hold it. Make 10 swishes close before stepping back.",
+    "Keep your base steady and your follow-through high — 'reach in the cookie jar'. Track makes from 5 spots and beat your number.",
+    "Don't rush it. Balanced feet, eyes on the back of the rim, smooth release. Quality reps now, range later.",
+  ],
+  nervous: [
+    "Nerves just mean you care — every player feels them. Take one slow breath out, focus on the very next play, not the scoreboard.",
+    "Channel those nerves into energy on defence and hustle. Breathe, smile, and remember: you've practised for this.",
+    "Try this: before tip-off, three slow breaths and one simple thought — 'do my job, next play'. Nerves shrink when you focus small.",
+  ],
+  handle: [
+    "Tight handle = daily reps. Pound the ball hard, eyes up, both hands. Two-ball drills fix a weak hand fast.",
+    "Control beats fancy. Master pound dribbles, crossovers and between-the-legs at game speed before the flashy stuff.",
+    "Keep your dribble low and hard, head up. Add a cone and attack it with a different move each time.",
+  ],
+  defence: [
+    "Defence is effort and feet, not gambling. Stay low, slide don't cross, and watch the centre of their chest, not the ball.",
+    "Great defenders beat their man to the spot. Stay in a stance, contest without fouling, and box out every time.",
+    "Pride yourself on stops. Low stance, active hands, and never give up on a play — that's the stuff coaches love.",
+  ],
+  jump: [
+    "Hops come from clean landings and power. Practise soft, balanced landings first; add broad jumps and low box jumps (step DOWN, never jump down).",
+    "Explosiveness builds from good mechanics. Quality jumps with full rest beat tired, sloppy ones every time.",
+    "Strong, quiet landings protect your knees and build spring. Keep jump reps sharp, not endless.",
+  ],
+  team: [
+    "Great teammates bring energy every day — talk on D, celebrate others, stay positive when it's tough. That makes everyone better.",
+    "Be the teammate you'd want: encourage, hustle, share the ball. Coaches notice attitude as much as buckets.",
+    "Lift the group up. A good pass, a loud call, a pick-up after a mistake — that's winning basketball.",
+  ],
+  mistake: [
+    "Every player makes mistakes — champions just reset faster. Wipe it, breathe out, next play. Don't carry it.",
+    "Mistakes mean you're competing. Learn the lesson in one second, then let it go and get the next one.",
+    "The best players have short memories for errors and long memories for lessons. Reset and go again.",
+  ],
+  tired: [
+    "Listen to your body — rest is part of training, not a weakness. Sleep, water and good food make you faster than any extra drill.",
+    "If the legs are heavy, keep it light today. Fresh beats fatigued every time, especially near game day.",
+    "Recovery is where you get stronger. Take the easy day, you'll bounce back sharper.",
+  ],
+  generic: [
+    "Love the mindset — keep showing up and putting in honest reps. Effort is the one thing you fully control. 🏀",
+    "Keep stacking good habits: reps, rest, and a great attitude. That's how players level up.",
+    "Stay patient and keep working. Small wins every session add up to a big game. You're on the right track.",
+    "Trust the process — focus on getting a little better today than yesterday. That's all it takes.",
+  ],
+};
+function coachIntent(text){
+  const t=(text||"").toLowerCase();
+  const has=(...w)=>w.some(x=>t.includes(x));
+  if(has("rough","bad game","lost","losing","terrible","awful","worst")) return "rough";
+  if(has("pump","hype","fired","motivat","confidence","believe")) return "pump";
+  if(has("shot","shoot","shooting","jumper","free throw","three")) return "shot";
+  if(has("nervous","scared","anxious","pressure","choke","afraid")) return "nervous";
+  if(has("handle","dribbl","crossover","ball control")) return "handle";
+  if(has("defen","defence","defense","guard","stop","lockdown")) return "defence";
+  if(has("jump","dunk","vertical","hops","explos")) return "jump";
+  if(has("team","teammate","coach said","passing","selfish")) return "team";
+  if(has("mistake","missed","turnover","messed up","fault","let everyone")) return "mistake";
+  if(has("tired","sore","exhausted","aching","rest")) return "tired";
+  return "generic";
+}
+
+// Reframe banks by style; intent-aware.
+const REFRAME_BANK = {
+  Facts: {
+    miss:["One miss is just one shot — even pro shooters miss about half. It's data, not a verdict.","Missing happens to everyone who takes shots. The shooters who keep shooting are the ones who score.","The miss is already in the past. Your next shot has the exact same chance of going in."],
+    defence:["Every defender gets beaten sometimes — even the best in the world. Good ones forget it and get the next stop.","One blow-by isn't your whole game. Reset your feet and win the next possession.","Defence is a series of plays. Lose one, win the next — that's the job."],
+    general:["This is one moment in a long journey. One play doesn't define a player who keeps working.","Feelings aren't facts. The fact is: you're improving every time you compete.","Tough moments are part of every athlete's story. Keep perspective and keep going."],
+  },
+  Calm:{
+    miss:["Breathe out once. The frustration is a wave — let it pass, don't ride it. Next play is yours.","It's okay. One slow breath, drop your shoulders, and reset. You're fine.","Let it go with your next exhale. Calm hands, calm mind, next shot."],
+    defence:["Settle your feet, settle your breath. One stop at a time — you don't have to fix it all at once.","Stay calm and low. Breathe, refocus, and just guard this next play.","Ease off the pressure on yourself. Quiet mind, active feet."],
+    general:["Take a breath. You care, and that's a good thing — now let the feeling pass and refocus.","Slow it down. One calm breath, one simple thought: do my job.","You're allowed to feel it, then let it go. Breathe and come back to now."],
+  },
+  Compete:{
+    miss:["Good — now the next one's going in. Shooters shoot. Eyes up, let it fly. 🔥","That just means you're due. Get to your spot and bury the next one.","Forget it — go attack. The best answer to a miss is the next bucket."],
+    defence:["Alright, now lock him UP next possession. Bring it. You owe him a stop. 🔥","Use it. Get down, get mad on D, and take the next one away from him.","Channel it — be the toughest player on the floor for the next 2 minutes."],
+    general:["Turn it up. Out-work everyone for the next stretch — effort is a choice and it's yours.","Use that fire. Compete harder, hustle more, make the next play yours.","Let it fuel you. Best players answer frustration with energy. Go get it. 💪"],
+  },
+};
+function reframeIntent(text){
+  const t=(text||"").toLowerCase();
+  if(t.includes("d")&&(t.includes("defen")||t.includes("guard")||t.includes("scored on")||t.includes("beat"))) return "defence";
+  if(t.includes("miss")||t.includes("shot")||t.includes("shoot")||t.includes("airball")||t.includes("brick")) return "miss";
+  return "general";
+}
+
+// =================== STATE / PROFILES =====================================
+const PKEY="courtiq_offline_v1";
+let DB = load();
+let active = null;
+let screen = "gate";
+
+function load(){ try{ return JSON.parse(localStorage.getItem(PKEY))||{}; }catch{ return {}; } }
+function persist(){ try{ localStorage.setItem(PKEY, JSON.stringify(DB)); }catch{} }
+function blank(name){ return {name,completed:0,streak:0,lastDay:null,pbs:{},pbHistory:{},history:[]}; }
+function me(){ return DB[active] || blank(active); }
+function update(mut){ const cur = me(); DB[active] = mut({...cur}); persist(); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function dbetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
+function logSession(){
+  update(p=>{ const t=today(); let s=p.streak;
+    if(p.lastDay==null)s=1; else{const g=dbetween(p.lastDay,t); s=g===0?(p.streak||1):g===1?p.streak+1:1;}
+    return {...p,completed:p.completed+1,streak:s,lastDay:t,history:[...(p.history||[]),t].slice(-60)};});
+}
+
+// --- Personal bests with history (for charts) ---
+const PB_DEFS={
+  ft:{label:"Free Throws (out of 20)",unit:"",lower:false},
+  shuttle:{label:"5-10-5 Shuttle",unit:"s",lower:true},
+  broad:{label:"Broad Jump",unit:"cm",lower:false},
+  vert:{label:"Vertical Jump",unit:"cm",lower:false},
+  sprint:{label:"20m Sprint",unit:"s",lower:true},
+};
+function savePB(key,value){
+  const def=PB_DEFS[key]; if(!def||isNaN(value))return {best:false};
+  let best=false;
+  update(p=>{
+    const cur=p.pbs[key];
+    best = cur==null || (def.lower? value<cur : value>cur);
+    const hist={...(p.pbHistory||{})};
+    hist[key]=[...(hist[key]||[]),{d:today(),v:value}].slice(-40);
+    return {...p,pbs:{...p.pbs,[key]: best?value:cur},pbHistory:hist};
+  });
+  return {best};
+}
+
+// --- Backup: export/import progress ---
+function exportProgress(){
+  const p=me();
+  const data=btoa(unescape(encodeURIComponent(JSON.stringify(p))));
+  const blob=new Blob([JSON.stringify(p,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=`courtiq-${(p.name||'player').replace(/[^a-z0-9]/gi,'')}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  return data;
+}
+function importProgressFromText(text){
+  try{
+    let obj;
+    try{ obj=JSON.parse(text); }
+    catch{ obj=JSON.parse(decodeURIComponent(escape(atob(text.trim())))); }
+    if(!obj||!obj.name) return false;
+    // normalise
+    obj.pbs=obj.pbs||{}; obj.pbHistory=obj.pbHistory||{}; obj.history=obj.history||[];
+    obj.completed=obj.completed||0; obj.streak=obj.streak||0;
+    DB[obj.name]=obj; persist(); active=obj.name; return true;
+  }catch{ return false; }
+}
+
+// --- Recommend today's session for the landing screen ---
+function recommendToday(){
+  const p=me();
+  // if trained today already, suggest a lighter/skill option or rest
+  const trainedToday = p.lastDay===today();
+  let w;
+  if(trainedToday) return {title:"Rest / light shooting",why:"You've already trained today — recovery is part of getting better. Maybe some easy free throws.",drills:["Free throws","Light shooting"],rest:true};
+  // rotate based on how many sessions done
+  const offPool=WORKOUTS.filter(x=>x.phase==="off");
+  w=offPool[p.completed % offPool.length];
+  return {title:w.title,why:`A balanced ${w.focus.toLowerCase()} session to keep building. About 20-30 min.`,drills:w.drills,rest:false};
+}
+
+const BADGES=[
+  {id:"first",label:"First Session",icon:"🏀",need:1},
+  {id:"five",label:"5 Sessions",icon:"⭐",need:5},
+  {id:"ten",label:"10 Sessions",icon:"🔥",need:10},
+  {id:"twenty",label:"20 Sessions",icon:"💪",need:20},
+  {id:"streak3",label:"3-Day Streak",icon:"⚡",needStreak:3},
+  {id:"streak7",label:"7-Day Streak",icon:"👑",needStreak:7},
+];
+function earned(p){const o=[];BADGES.forEach(b=>{if(b.need&&p.completed>=b.need)o.push(b.id);if(b.needStreak&&p.streak>=b.needStreak)o.push(b.id);});return o;}
+
+const WORKOUTS=[
+  {title:"Handle + Finish",focus:"Attack the rim",phase:"off",drills:["Pound dribbles","Cone combos","Mikan drill","Euro step","Free throws"]},
+  {title:"Shooting Builder",focus:"Form & range",phase:"off",drills:["Form shooting","Spot shooting","Catch & shoot","Triple-threat reads","Free throws"]},
+  {title:"Playmaker",focus:"Vision & moves",phase:"off",drills:["Wall passing","Pass off dribble","Jab series","Cone combos","Vision call-outs"]},
+  {title:"Two-Way Day",focus:"Defence + finishing",phase:"off",drills:["Defensive slides","Closeouts","Box out","Reverse layups","Floater"]},
+  {title:"Scoring Moves",focus:"Create & finish",phase:"off",drills:["Low rip to drive","High rip to drive","Veer step","Contact finishing","Drop step","Up-and-under"]},
+  {title:"Speed + Jumps",focus:"Engine room",phase:"off",drills:["Reaction starts","5-10-5 shuttle","Broad jumps","Bounds","Box jumps (step down)"]},
+  {title:"Quick Skills Touch-Up",focus:"Stay sharp, low load",phase:"in",drills:["Pound dribbles","Spot shooting","Mikan drill","Triple-threat reads"]},
+  {title:"Shooting Tune-Up",focus:"Reps & free throws",phase:"in",drills:["Form shooting","Catch & shoot","Free throws"]},
+  {title:"Speed Sharpness",focus:"Quick & fresh",phase:"in",drills:["Reaction starts","5-10-5 shuttle","Light pogo hops"]},
+];
+function offlinePickWorkout({legs,mood,game}){
+  // simple coaching logic
+  let pool;
+  if(game==="Today or tomorrow") pool = WORKOUTS.filter(w=>w.phase==="in");
+  else if(legs==="Pretty sore") pool = WORKOUTS.filter(w=>!/Jump|Speed/.test(w.title));
+  else if(mood==="Low / frustrated") pool = WORKOUTS.filter(w=>w.phase==="in"||w.title==="Shooting Builder");
+  else pool = WORKOUTS.filter(w=>w.phase==="off");
+  if(!pool.length) pool = WORKOUTS;
+  const w = pick(pool);
+  let why;
+  if(game==="Today or tomorrow") why="A game's close, so keep it short and sharp and save your legs.";
+  else if(legs==="Pretty sore") why="Your legs are sore, so we'll skip heavy jumps and keep it skill-focused today.";
+  else if(mood==="Low / frustrated") why="Low energy day — a focused, win-friendly session to rebuild rhythm and confidence.";
+  else why="You're fresh with no game soon — a great day to build with a fuller session.";
+  return {title:w.title,why,drills:w.drills};
+}
+
+// =================== ICONS (inline svg strings) ===========================
+const IC={
+  user:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f9e54" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"/></svg>`,
+  back:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f4f6f1" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"/></svg>`,
+  chat:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5 H20 V16 H9 L4 20 Z"/><path d="M8 10 H16 M8 13 H13"/></svg>`,
+  dice:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="${c}"/><circle cx="15" cy="15" r="1.2" fill="${c}"/><circle cx="15" cy="9" r="1.2" fill="${c}"/><circle cx="9" cy="15" r="1.2" fill="${c}"/></svg>`,
+  flip:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 A8 4 0 0 1 20 8 M20 16 A8 4 0 0 1 4 16"/><path d="M20 5 V9 H16 M4 19 V15 H8"/></svg>`,
+  chart:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 V4 M4 20 H20"/><path d="M8 16 V12 M12 16 V8 M16 16 V10"/></svg>`,
+  send:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a1512" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L20 4 L14 20 L11 13 Z"/></svg>`,
+  spark:c=>`<svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3 L13.5 9 L19 10.5 L13.5 12 L12 18 L10.5 12 L5 10.5 L10.5 9 Z" fill="${c}"/></svg>`,
+  save:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4 H16 L19 7 V20 H5 Z"/><path d="M8 4 V9 H15 M8 20 V14 H16 V20"/></svg>`,
+  aim:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1 V4 M12 20 V23 M1 12 H4 M20 12 H23"/></svg>`,
+  book:c=>`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4 H16 A3 3 0 0 1 19 7 V20 H8 A3 3 0 0 1 5 17 Z"/><path d="M5 17 A3 3 0 0 1 8 14 H19"/><path d="M9 8 H15"/></svg>`,
+};
+
+// =================== DRILL ANIMATIONS (icons, chips, demos) ================
+// Map any drill name to one of our demo categories (order matters).
+function drillDemoKey(d){
+  const t=(d||"").toLowerCase();
+  if(/mikan/.test(t)) return "mikan";
+  if(/up.?and.?under|up.?under/.test(t)) return "upunder";
+  if(/drop.?step|post/.test(t)) return "dropstep";
+  if(/contact/.test(t)) return "contact";
+  if(/rip/.test(t)) return "rip";
+  if(/veer/.test(t)) return "veer";
+  if(/slide|defen|closeout|close out|box out|lockdown|guard/.test(t)) return "slide";
+  if(/jump|broad|bound|pogo|vert|hop/.test(t)) return "jump";
+  if(/layup|reverse|finish|floater/.test(t)) return "layup";
+  if(/cross|cone|combo|euro|jab|triple/.test(t)) return "cross";
+  if(/dribbl|pound|handle|ball control/.test(t)) return "dribble";
+  if(/shoot|shot|form|spot|catch|free throw|jumper|range/.test(t)) return "shot";
+  if(/pass|wall|vision/.test(t)) return "pass";
+  if(/sprint|shuttle|reaction|speed|start|5-10-5/.test(t)) return "sprint";
+  return null;
+}
+// Little looping icon beside each drill (Option 3).
+function drillIcon(d){
+  const k=drillDemoKey(d); let cls="ball",inner="";
+  if(k==="slide"||k==="sprint"||k==="pass"||k==="veer"){cls="arrow";inner="&raquo;";}
+  else if(k==="cross"||k==="mikan"||k==="rip"){cls="spin";}
+  else if(k==="jump"||k==="contact"||k==="dropstep"||k==="upunder"){cls="up";}
+  return `<span class="dico ${cls}" aria-hidden="true">${inner}</span>`;
+}
+// One drill chip: icon + name, staggered entrance, tappable if it has a demo.
+function drillChip(d,i){
+  const key=drillDemoKey(d), ic=drillIcon(d);
+  const delay=`animation-delay:${(i*0.06).toFixed(2)}s`;
+  const attrs = key ? `class="drillchip ci tap" onclick="showDrill('${key}')"` : `class="drillchip ci"`;
+  return `<span ${attrs} style="${delay}">${ic}<span>${esc(d)}</span>${key?'<span class="pd">&#9658;</span>':''}</span>`;
+}
+// Reusable articulated stick figure (limbs pivot at shoulders/hips via CSS).
+const SFIG='<svg class="sfig" viewBox="0 0 200 170" aria-hidden="true">'+
+  '<g class="limb legL"><line class="leg" x1="100" y1="96" x2="100" y2="148"/><ellipse class="shoe" cx="101" cy="149" rx="12" ry="6"/></g>'+
+  '<g class="limb legR"><line class="leg" x1="100" y1="96" x2="100" y2="148"/><ellipse class="shoe" cx="101" cy="149" rx="12" ry="6"/></g>'+
+  '<path class="shorts" d="M85 90 L115 90 L116 112 L104 112 L100 100 L96 112 L84 112 Z"/>'+
+  '<path class="jersey" d="M85 53 Q100 47 115 53 L113 94 Q100 99 87 94 Z"/>'+
+  '<path class="collar" d="M94 50 Q100 56 106 50"/>'+
+  '<g class="limb armL"><line class="arm" x1="100" y1="52" x2="100" y2="85"/><circle class="hand" cx="100" cy="87" r="6"/></g>'+
+  '<g class="limb armR"><line class="arm" x1="100" y1="52" x2="100" y2="85"/><circle class="hand" cx="100" cy="87" r="6"/></g>'+
+  '<circle class="head" cx="100" cy="36" r="15"/>'+
+  '<path class="hair" d="M85 34 Q86 18 100 18 Q114 18 115 34 Q110 26 100 26 Q90 26 85 34 Z"/>'+
+  '<circle class="eye" cx="95" cy="36" r="1.8"/><circle class="eye" cx="105" cy="36" r="1.8"/>'+
+  '<path class="mouth" d="M96 43 Q100 46 104 43"/></svg>';
+function dScene(drill,props){ return `<div class="dc"><div class="dfloor"></div>${props||""}<div class="figwrap ${drill}">${SFIG}</div></div>`; }
+
+// Animated demo scenes + short coaching cues (Option 1).
+const DRILL_DEMO={
+  dribble:{title:"Pound dribbles",scene:dScene("dribble",'<div class="dball a-dribble"></div>'),how:["Pound the ball hard, no higher than your knee.","Eyes up — don't look at the ball.","Both hands, stay low and balanced."]},
+  cross:{title:"Crossover & cones",scene:dScene("cross",'<div class="dcone" style="left:22%"></div><div class="dcone" style="left:72%"></div><div class="dball a-cross"></div>'),how:["Push the ball low and quick across your body.","Change speed as you cross over.","Head up — attack past the cone."]},
+  mikan:{title:"Mikan drill",scene:dScene("mikan",'<div class="drim" style="left:calc(50% - 13px);top:22px"></div><div class="dnet" style="left:calc(50% - 10px);top:26px"></div><div class="dball a-mikan"></div>'),how:["Stand right under the rim.","Lay it in, catch it, lay it in the other side.","Soft, high touches off the backboard."]},
+  shot:{title:"Shooting form",scene:dScene("shoot",'<div class="drim" style="right:26px;top:56px"></div><div class="dnet" style="right:29px;top:60px"></div><div class="dball a-shot"></div>'),how:["Balanced feet, elbow tucked in.","Smooth up and follow through high.","Hold it high — reach in the cookie jar."]},
+  layup:{title:"Layups & finishing",scene:dScene("layup",'<div class="drim" style="right:26px;top:46px"></div><div class="dnet" style="right:29px;top:50px"></div><div class="dball a-layup"></div>'),how:["Drive hard and jump off the correct foot.","Protect the ball, lay it soft off the glass.","Finish strong, even through contact."]},
+  slide:{title:"Defensive slides",scene:dScene("slide",""),how:["Stay low in a wide, strong stance.","Push and slide — never cross your feet.","Watch the centre of their chest, not the ball or fakes."]},
+  jump:{title:"Jumps & landings",scene:dScene("jump",""),how:["Load up: bend your knees and swing your arms.","Explode up as tall as you can.","Land soft and quiet. Always step DOWN off a box."]},
+  pass:{title:"Passing & vision",scene:dScene("pass",'<div style="position:absolute;right:20px;top:34px;bottom:16px;width:4px;background:rgba(47,158,84,.45)"></div><div class="dball a-pass"></div>'),how:["Step into it and snap it from your chest.","Eyes up — read the whole floor.","On time, on target, into their hands."]},
+  sprint:{title:"Speed & reactions",scene:dScene("sprint",""),how:["Explode from a low, strong first step.","Pump your arms; rise up as you build speed.","Quality sprints with full rest beat tired ones."]},
+  rip:{title:"Rip & drive",scene:dScene("rip",'<div class="dball a-rip"></div>'),how:["Low rip: rip the ball low past your knees to drive.","High rip: rip it up past your shoulders for space.","Rip hard and explode past on your first step."]},
+  veer:{title:"Veer step",scene:dScene("veer",'<div class="figwrap deffig" style="left:47%">'+SFIG+'</div><div class="drim" style="right:26px;top:48px"></div><div class="dnet" style="right:29px;top:52px"></div><div class="dball a-veer"></div>'),how:["Veer hard off your outside foot to change direction.","Take the bump — stay strong and keep your balance.","Go up through the contact and finish soft off the glass."]},
+  contact:{title:"Contact finishing",scene:dScene("contact",'<div class="ddef" style="right:60px;bottom:16px;width:8px;height:78px"></div><div class="drim" style="right:26px;top:48px"></div><div class="dnet" style="right:29px;top:52px"></div><div class="dball a-contact"></div>'),how:["Jump off two feet and stay strong through the bump.","Protect the ball high, away from the defender.","Finish soft off the glass, even through contact."]},
+  dropstep:{title:"Post — drop step",scene:dScene("post",'<div class="drim" style="right:26px;top:46px"></div><div class="dnet" style="right:29px;top:50px"></div><div class="dball a-post"></div>'),how:["Seal your defender with a wide, low base.","Drop-step toward the rim off your back foot.","Power up off two feet and finish high off the board."]},
+  upunder:{title:"Post — up-and-under",scene:dScene("upunder",'<div class="drim" style="right:26px;top:46px"></div><div class="dnet" style="right:29px;top:50px"></div><div class="dball a-upunder"></div>'),how:["Shot-fake to lift the defender off the floor.","Step through underneath as they fly by.","Finish soft on the other side of the rim."]},
+};
+window.showDrill=(key)=>{
+  const d=DRILL_DEMO[key]; if(!d) return;
+  const el=document.createElement("div");
+  el.className="overlay"; el.id="drilloverlay";
+  el.onclick=e=>{ if(e.target===el) closeDrill(); };
+  el.innerHTML=`<div class="sheet">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div style="font-weight:900;font-size:19px">${esc(d.title)}</div>
+      <button class="backbtn" style="width:34px;height:34px;font-size:15px;color:var(--chalk)" onclick="closeDrill()" aria-label="Close demo">&#10005;</button>
+    </div>
+    ${d.scene}
+    <div style="font-size:11px;color:var(--line-soft);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">How to</div>
+    <ol style="margin:0;padding-left:18px;font-size:14px;line-height:1.6">
+      ${d.how.map(h=>`<li style="margin-bottom:4px">${esc(h)}</li>`).join("")}
+    </ol>
+    <p class="note" style="text-align:left;margin-top:14px">These animations are simple guides — always ask your coach to check your form.</p>
+  </div>`;
+  document.body.appendChild(el);
+};
+window.closeDrill=()=>{ const el=$("#drilloverlay"); if(el) el.remove(); };
+
+// =================== RENDER ================================================
+let toastTimer=null;
+function toast(msg){ const t=$("#toast"); t.innerHTML=`<div class="toast">${esc(msg)}</div>`; clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.innerHTML="",2600); }
+
+function render(){
+  if(!active){ renderGate(); return; }
+  if(screen==="hub") renderHub();
+  else if(screen==="coach") renderCoach();
+  else if(screen==="mechanics") renderMechanics();
+  else if(screen==="terms") renderTerms();
+  else if(screen==="picker") renderPicker();
+  else if(screen==="reframe") renderReframe();
+  else if(screen==="review") renderReview();
+  else if(screen==="progress") renderProgress();
+  else if(screen==="backup") renderBackup();
+}
+
+function topbar(){
+  const p=me();
+  const mode = `<span class="mode-badge mode-live">AI COACH</span>`;
+  return `<div class="topbar">
+    <div class="avatar">${IC.user}</div>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:15px">${esc(p.name)}</div>
+      <div style="font-size:12px;color:var(--chalk-dim)">${p.streak>0?"🔥 "+p.streak+"-day streak":"Let's start a streak"}</div>
+    </div>
+    ${mode}
+    <button class="pill" onclick="switchPlayer()">Switch</button>
+  </div>`;
+}
+
+function renderGate(){
+  const names=Object.keys(DB);
+  app.innerHTML=`
+    <header style="text-align:center;padding:30px 0 10px">
+      <div class="eyebrow">Basketball Hub</div>
+      <h1 class="brand"><span class="w">Court</span> <span class="a">IQ</span></h1>
+      <p style="color:var(--chalk-dim);font-size:15px;margin:12px auto 0;max-width:40ch">Your coach, smart workouts and progress — all in one. Works offline, no account needed. Who's training?</p>
+    </header>
+    ${names.length?`<div style="margin-top:26px"><div class="sectlabel">Pick your player</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${names.map(n=>`<button class="tile" style="border-color:rgba(47,158,84,.3);background:rgba(8,20,16,.5);margin:0" onclick="choose('${esc(n).replace(/'/g,"\\'")}')">
+        <div class="ic" style="width:auto;height:auto">${IC.user}</div>
+        <div><div class="tt" style="font-size:16px">${esc(n)}</div><div class="ts" style="font-size:11.5px">${DB[n].completed} sessions</div></div></button>`).join("")}
+      </div></div>`:""}
+    <div style="margin-top:26px">
+      <div class="sectlabel">${names.length?"Or add a new player":"Add a player"}</div>
+      <div style="display:flex;gap:8px">
+        <input id="newname" class="txt" placeholder="First name or nickname" maxlength="20" style="flex:1" onkeydown="if(event.key==='Enter')createPlayer()">
+        <button class="btn-primary" onclick="createPlayer()">Go</button>
+      </div>
+      <p class="note" style="text-align:left;margin-top:10px">Use a first name or nickname only. Each player's progress saves on this device. Powered by your hosted AI, with offline backup built in.</p>
+    </div>`;
+}
+window.choose=n=>{active=n;screen="hub";render();};
+window.createPlayer=()=>{const v=$("#newname").value.trim().slice(0,20);if(!v)return;if(!DB[v])DB[v]=blank(v);persist();active=v;screen="hub";render();};
+window.switchPlayer=()=>{active=null;render();};
+
+function renderHub(){
+  const p=me();const b=earned(p);
+  const tiles=[
+    {s:"coach",ic:IC.chat("#2f9e54"),col:"#2f9e54",t:"AI Coach",d:"Chat about your game, get a pep talk or tip"},
+    {s:"mechanics",ic:IC.aim("#f59e3c"),col:"#f59e3c",t:"Shot Mechanics",d:"Build perfect shooting form, step by step"},
+    {s:"terms",ic:IC.book("#9d7bff"),col:"#9d7bff",t:"Terminology",d:"Ask what any term means — with a coach's diagram"},
+    {s:"picker",ic:IC.dice("#5aa9e6"),col:"#5aa9e6",t:"What Should I Train?",d:"Smart pick for today, based on your week"},
+    {s:"reframe",ic:IC.flip("#ffd23f"),col:"#ffd23f",t:"Flip My Thinking",d:"Type what's bugging you — flip it around"},
+    {s:"progress",ic:IC.chart("#e8743c"),col:"#e8743c",t:"My Progress",d:"Charts of your bests, plus log a new record"},
+    {s:"review",ic:IC.spark("#c77dff"),col:"#c77dff",t:"Coach's Review",d:"See your progress & next goal"},
+    {s:"backup",ic:IC.save("#aebcb2"),col:"#aebcb2",t:"Backup / Restore",d:"Save your progress or move it to another device"},
+  ];
+  const rec=recommendToday();
+  app.innerHTML=topbar()+`
+    <div class="stats">
+      <div class="stat"><div class="big">${p.completed}</div><div class="lbl">Sessions</div></div>
+      <div class="stat"><div class="big" style="color:var(--flash)">${p.streak>0?"🔥":""}${p.streak}</div><div class="lbl">Day streak</div></div>
+      <div class="stat"><div class="big">${b.length}</div><div class="lbl">Badges</div></div>
+    </div>
+
+    <div class="sectlabel"><span style="display:inline-flex;align-items:center;gap:6px">${IC.spark("#ffd23f")} Today</span></div>
+    <div class="card" style="border-color:var(--flash)66;background:linear-gradient(180deg,rgba(255,210,63,.12),rgba(255,210,63,.03));margin-bottom:22px">
+      <div style="font-size:12px;color:var(--flash);font-weight:800;letter-spacing:.1em;text-transform:uppercase">${p.streak>0?("🔥 Day "+ (p.streak) +" — keep it alive"):"Let's get started"}</div>
+      <div style="font-size:22px;font-weight:900;margin:6px 0 4px">${esc(rec.title)}</div>
+      <div style="color:var(--chalk-dim);font-size:14px;margin-bottom:12px">${esc(rec.why)}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+        ${(rec.drills||[]).map((d,i)=>drillChip(d,i)).join("")}
+      </div>
+      ${rec.rest?`<button class="btn-ghost" onclick="goto('picker')">Pick a different session</button>`
+        :`<button class="btn-primary" style="width:100%" onclick="startToday()">Start today's session 🏀</button>`}
+    </div>
+
+    <div class="sectlabel"><span style="display:inline-flex;align-items:center;gap:6px">${IC.spark("#ffd23f")} Tools</span></div>`+
+    tiles.map((t,i)=>`<button class="tile ci" style="border-color:${t.col}55;background:linear-gradient(180deg,${t.col}1f,${t.col}08);animation-delay:${(i*0.05).toFixed(2)}s" onclick="goto('${t.s}')">
+      <div class="ic" style="background:${t.col}22">${t.ic}</div>
+      <div style="flex:1"><div class="tt">${t.t}</div><div class="ts">${t.d}</div></div>
+    </button>`).join("")+
+    `<p class="note">Coach IQ is for basketball, effort and mindset only. If something bigger is on your mind, please talk to a parent, teacher or another trusted adult.</p>`;
+}
+window.startToday=()=>{ const r=recommendToday(); if(r.rest){goto('picker');return;} logSession(); toast("Session logged — streak banked! 🔥"); render(); };
+window.goto=s=>{screen=s;render();};
+window.home=()=>{screen="hub";render();};
+
+function backbar(title){return `<div class="backbar"><button class="backbtn" onclick="home()">${IC.back}</button><span class="ttl">${title}</span></div>`;}
+
+// ================= SHOT MECHANICS =================
+const MECH_FEET=`<div class="mc"><div class="mrim"></div><div class="mguide"></div><div class="mfoot mfootL"></div><div class="mfoot mfootR"></div></div>`;
+const MECH_ELBOW=`<div class="mc"><div class="melbowwrap">
+  <div class="mhalf"><svg viewBox="0 0 80 96" class="marm" aria-hidden="true">
+    <line class="mbone bad" x1="40" y1="24" x2="15" y2="55"/><line class="mbone bad" x1="15" y1="55" x2="40" y2="88"/>
+    <circle class="mball" cx="40" cy="15" r="9"/><circle class="mjoint bad" cx="15" cy="55" r="4"/></svg>
+    <div class="mlabel" style="color:var(--hot)">&#10007; Chicken wing</div></div>
+  <div class="mhalf"><svg viewBox="0 0 80 96" class="marm" aria-hidden="true">
+    <line class="mvguide" x1="40" y1="8" x2="40" y2="92"/>
+    <line class="mbone good" x1="40" y1="24" x2="40" y2="56"/><line class="mbone good" x1="40" y1="56" x2="40" y2="88"/>
+    <circle class="mball" cx="40" cy="15" r="9"/><circle class="mjoint good" cx="40" cy="56" r="4"/></svg>
+    <div class="mlabel" style="color:var(--line-soft)">&#10003; Straight line</div></div>
+</div></div>`;
+const MECH_COOKIE=`<div class="mc"><svg viewBox="0 0 130 116" class="mcj" aria-hidden="true">
+  <rect class="mjar" x="20" y="60" width="36" height="40" rx="5"/><rect class="mjarlid" x="16" y="53" width="44" height="9" rx="3"/>
+  <line class="mbone good" x1="92" y1="110" x2="80" y2="52"/>
+  <g class="mwrist"><line class="mbone good" x1="80" y1="52" x2="76" y2="24"/>
+    <line class="mfing" x1="76" y1="24" x2="70" y2="15"/><line class="mfing" x1="76" y1="24" x2="78" y2="13"/><line class="mfing" x1="76" y1="24" x2="85" y2="17"/></g>
+</svg></div>`;
+function mechCard(tag,title,scene,cues){
+  return `<div class="card ci" style="margin-bottom:14px">
+    <div style="font-size:11px;color:var(--flash);font-weight:800;letter-spacing:.1em;text-transform:uppercase">${tag}</div>
+    <div style="font-size:18px;font-weight:900;margin:2px 0 0">${esc(title)}</div>
+    ${scene}
+    <ul style="margin:12px 0 0;padding-left:18px;font-size:13.5px;line-height:1.55">
+      ${cues.map(c=>`<li style="margin-bottom:3px">${esc(c)}</li>`).join("")}
+    </ul></div>`;
+}
+function renderMechanics(){
+  app.innerHTML=topbar()+backbar("Shot Mechanics")+`
+    <p style="color:var(--chalk-dim);font-size:14.5px;margin:2px 2px 16px">Three keys to a pure shot. Watch each one, then groove it with reps close to the rim. 🎯</p>
+    ${mechCard("1 · Base","10 toes to the basket",MECH_FEET,["Point all ten toes straight at the rim.","Feet about shoulder-width, knees bent.","A square base gives you a square, repeatable shot."])}
+    ${mechCard("2 · Alignment","Elbow under the ball",MECH_ELBOW,["Shooting elbow in a straight line under the ball.","Pointed at the hoop — no chicken wing.","Shoulder, elbow, wrist and ball all stacked up."])}
+    ${mechCard("3 · Follow-through","Hand in the cookie jar",MECH_COOKIE,["Snap your wrist down as you release.","Reach your hand into the cookie jar.","Hold the follow-through until the ball lands."])}
+    ${mechCard("4 · Routine","Free-throw routine",dScene("shoot",'<div class="drim" style="right:26px;top:56px"></div><div class="dnet" style="right:29px;top:60px"></div><div class="dball a-shot"></div>'),["Same routine every time — that's what builds confidence.","Line your shooting foot up with the middle of the rim.","Three dribbles, deep breath, eyes on the back of the rim.","Up smooth, snap the wrist, hold the cookie jar."])}
+    <p class="note">Start slow and close to the basket — perfect reps build a perfect shot. Beat your free-throw best in My Progress!</p>`;
+}
+
+// ================= TERMINOLOGY (glossary + coach diagrams) =================
+function O(x,y,n){return `<circle cx="${x}" cy="${y}" r="11" fill="#e8743c" stroke="#b8531f" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#0a1512">${n}</text>`;}
+function DX(x,y){return `<g stroke="#5aa9e6" stroke-width="3" stroke-linecap="round"><line x1="${x-8}" y1="${y-8}" x2="${x+8}" y2="${y+8}"/><line x1="${x-8}" y1="${y+8}" x2="${x+8}" y2="${y-8}"/></g>`;}
+function BALL(x,y){return `<circle cx="${x}" cy="${y}" r="4.5" fill="#e8743c" stroke="#0a1512" stroke-width="1"/>`;}
+function cutA(d){return `<path d="${d}" fill="none" stroke="#f4f6f1" stroke-width="2.5" stroke-linecap="round" marker-end="url(#tah)"/>`;}
+function passA(d){return `<path d="${d}" fill="none" stroke="#ffd23f" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round" marker-end="url(#tah)"/>`;}
+function screenBar(x1,y1,x2,y2){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#f4f6f1" stroke-width="3.5" stroke-linecap="round"/>`;}
+function spot(x,y){return `<circle cx="${x}" cy="${y}" r="14" fill="rgba(255,210,63,.28)" stroke="#ffd23f" stroke-width="2.5"/>`;}
+function zoneRect(x,y,w,h){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(255,210,63,.22)" stroke="#ffd23f" stroke-width="2.5" rx="2"/>`;}
+function courtSVG(overlay){return '<svg viewBox="0 0 300 300" class="court" aria-hidden="true"><defs><marker id="tah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="context-stroke" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect x="20" y="20" width="260" height="264" rx="5" fill="rgba(8,20,16,.5)" stroke="#2f9e54" stroke-width="2"/><rect x="115" y="20" width="70" height="92" fill="none" stroke="#2f9e54" stroke-width="1.5"/><circle cx="150" cy="112" r="30" fill="none" stroke="#2f9e54" stroke-width="1.5"/><line x1="132" y1="30" x2="168" y2="30" stroke="#e85b5b" stroke-width="2.5"/><circle cx="150" cy="37" r="6" fill="none" stroke="#e85b5b" stroke-width="2"/><path d="M42 20 L42 66 A110 110 0 0 0 258 66 L258 20" fill="none" stroke="#2f9e54" stroke-width="1.5"/>'+overlay+'</svg>';}
+
+const D_FLEX=courtSVG(screenBar(102,68,102,94)+cutA("M196 92 Q158 108 130 88")+passA("M150 240 Q116 152 124 94")+O(112,84,"5")+O(205,86,"2")+O(150,250,"1")+BALL(163,247));
+const D_PNR=courtSVG(screenBar(116,206,138,206)+cutA("M150 238 Q116 196 98 150")+cutA("M130 202 Q142 130 150 58")+O(128,216,"5")+O(150,250,"1")+BALL(163,247));
+const D_GG=courtSVG(passA("M94 208 L186 208")+cutA("M80 198 Q112 120 150 56")+passA("M196 200 Q176 122 158 62")+O(80,210,"1")+O(200,210,"2")+BALL(93,207));
+const D_BD=courtSVG(DX(224,196)+cutA("M236 166 Q212 112 168 62")+passA("M162 244 Q174 150 174 78")+O(236,178,"2")+O(150,250,"1")+BALL(163,247));
+
+const TERMS={
+  flexcut:{name:"Flex cut",aliases:["flex cut","flex","flex screen"],diagram:D_FLEX,def:"A hard cut across the lane where you rub off a teammate's baseline screen to get open for a layup. It's the signature action of the Flex offence — read the screen and cut straight to the rim."},
+  pnr:{name:"Pick & roll",aliases:["pick and roll","pick n roll","pick-and-roll","ball screen","pnr","screen and roll"],diagram:D_PNR,def:"Two players combine: one sets a screen (the 'pick') on the ball-handler's defender, then cuts to the basket (the 'roll') for a pass. It's the most common play in basketball because it forces defenders into tough choices."},
+  giveandgo:{name:"Give-and-go",aliases:["give and go","give-and-go","give n go"],diagram:D_GG,def:"Pass to a teammate (the 'give'), then immediately sprint to the basket (the 'go') for a return pass and an easy score. Simple, old-school, and almost unstoppable when the timing is right."},
+  backdoor:{name:"Backdoor cut",aliases:["backdoor","back door","backdoor cut","back cut"],diagram:D_BD,def:"When your defender overplays you to deny a pass, you cut sharply behind them to the basket for a surprise pass and layup. It punishes defenders who over-commit."},
+  boxout:{name:"Box out",aliases:["box out","boxout","block out"],def:"Using your body to seal an opponent behind you so you can grab the rebound. Turn, make contact, and hold your ground — most rebounds are won by effort, not height."},
+  tripthreat:{name:"Triple threat",aliases:["triple threat","triple-threat"],def:"A balanced stance holding the ball where you can shoot, pass, or dribble — all three threats at once. It keeps the defence guessing and starts almost every move."},
+  iso:{name:"Isolation (iso)",aliases:["isolation","iso"],def:"Clearing teammates out to one side so an attacker can go one-on-one against a single defender in space."},
+  postup:{name:"Post up",aliases:["post up","posting up","post"],def:"Setting up close to the basket with your back to the rim, sealing your defender to receive a pass and score inside."},
+  fastbreak:{name:"Fast break",aliases:["fast break","fastbreak","break","transition"],def:"Pushing the ball up the court quickly after a rebound or steal to score before the defence can get set."},
+  crossover:{name:"Crossover",aliases:["crossover","cross over"],def:"A dribble move where you quickly switch the ball from one hand to the other to change direction and beat your defender."},
+  zone:{name:"Zone defence",aliases:["zone","zone defence","zone defense"],def:"A defence where each player guards an area of the court rather than a specific opponent."},
+  man:{name:"Man-to-man",aliases:["man to man","man-to-man","man defence","man defense"],def:"A defence where each player guards one specific opponent the whole way down the floor."},
+  doubleteam:{name:"Double team",aliases:["double team","double-team","trap"],def:"Two defenders guarding one attacker at once to force a turnover or a rushed pass."},
+  press:{name:"Full-court press",aliases:["press","full court press","full-court press"],def:"Applying defensive pressure across the whole court, not just near your basket, to speed up and rattle the opponent."},
+  andone:{name:"And-one",aliases:["and one","and-one","and1"],def:"When you get fouled while scoring, the basket counts and you get one free throw — a chance to turn two points into three."},
+  pickpop:{name:"Pick & pop",aliases:["pick and pop","pick-and-pop","pick n pop"],def:"Like a pick & roll, but after screening, the screener steps back out for a jump shot instead of rolling to the rim."},
+  paint:{name:"The key / paint / lane",aliases:["key","paint","the paint","the key","lane","the lane","in the paint","three second area","three-second area"],diagram:courtSVG(zoneRect(115,20,70,92)),def:"The painted rectangle from the baseline to the free-throw line, right in front of the basket. Also called the key or the lane. On offence you can only stand in it for 3 seconds at a time."},
+  nail:{name:"The nail",aliases:["nail","the nail"],diagram:courtSVG(spot(150,112)),def:"The exact middle of the free-throw line. Defenders sit here to help on drives up the middle; offences attack it to split the defence."},
+  elbow:{name:"The elbows",aliases:["elbow","elbows","the elbow","the elbows"],diagram:courtSVG(spot(116,112)+spot(184,112)),def:"The two corners where the free-throw line meets the lane. A great spot for a pull-up jumper or to run offence from the high post."},
+  wing:{name:"The wings",aliases:["wing","wings","the wing","the wings"],diagram:courtSVG(spot(62,150)+spot(238,150)),def:"The areas out on the three-point line on each side, roughly level with the free-throw line. Most offences start with the ball on the wing."},
+  corner:{name:"The corners",aliases:["corner","corners","the corner","the corners","corner three","corner 3"],diagram:courtSVG(spot(42,58)+spot(258,58)),def:"The baseline spots just inside the sideline, behind the three-point line. The corner three is the shortest three-pointer on the floor."},
+  shortcorner:{name:"Short corner / dunker spot",aliases:["short corner","dunker spot","dunker"],diagram:courtSVG(spot(102,52)+spot(198,52)),def:"The baseline area just outside the lane, closer in than the corner. A prime spot for bigs to catch and finish — the 'dunker spot'."},
+  coffincorner:{name:"Coffin corner",aliases:["coffin corner","coffin"],diagram:courtSVG(spot(44,46)),def:"The tight spot right in the corner, boxed in by the baseline and the sideline. Defences try to trap ball-handlers here because there's nowhere to go — never pick up your dribble in the coffin corner."},
+  topkey:{name:"Top of the key",aliases:["top of the key","top of key","the top","top"],diagram:courtSVG(spot(150,142)),def:"The area at the top of the three-point arc, straight out from the basket. The main spot to run offence from and to reverse the ball."},
+  slot:{name:"The slots",aliases:["slot","slots","the slot","the slots"],diagram:courtSVG(spot(108,178)+spot(192,178)),def:"The two spots between the top of the key and the wings. Great launch points for driving gaps or swinging the ball."},
+  block:{name:"The block / low post",aliases:["block","blocks","the block","on the block","low post","low-post"],diagram:courtSVG(spot(116,72)+spot(184,72)),def:"The marked blocks on the side of the lane next to the basket. This is where post players seal up to score close to the rim (the low post)."},
+  highpost:{name:"High post",aliases:["high post","high-post"],diagram:courtSVG(spot(150,98)),def:"The area near the free-throw line, inside the arc. A smart passing and scoring spot for skilled bigs who face up to the basket."},
+  seams:{name:"Seams / gaps",aliases:["seam","seams","gap","gaps","the seams"],def:"The spaces between defenders, especially in a zone. Attacking the seams — dribbling or passing into the gaps — makes two defenders guard you and frees up a teammate."},
+};
+function findTerm(q){
+  const t=(q||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+  if(!t) return null;
+  for(const k in TERMS){ const e=TERMS[k]; const names=[e.name].concat(e.aliases||[]).map(s=>s.toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim()); if(names.includes(t)) return e; }
+  for(const k in TERMS){ const e=TERMS[k]; const names=[e.name].concat(e.aliases||[]).map(s=>s.toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim()); if(names.some(n=>n&&(t.includes(n)||n.includes(t)))) return e; }
+  return null;
+}
+let termState={q:"",result:null};
+function termResultHTML(r){
+  return `<div class="card reveal" style="margin-top:16px">
+    <div style="font-weight:900;font-size:19px;margin-bottom:${r.diagram?'10px':'6px'}">${esc(r.name)}</div>
+    ${r.diagram?`<div class="courtwrap">${r.diagram}</div><div class="termlegend">O = attacker · × = defender · solid = cut/drive · dashed = pass</div>`:""}
+    <div style="font-size:14.5px;line-height:1.6;margin-top:${r.diagram?'12px':'2px'}">${esc(r.def)}</div>
+    ${r.ai?`<p class="note" style="text-align:left;margin-top:10px">Explained by Coach IQ — no diagram for this one yet.</p>`:""}
+  </div>`;
+}
+function renderTerms(){
+  app.innerHTML=topbar()+backbar("Terminology")+`
+    <p style="color:var(--chalk-dim);font-size:14.5px;margin:2px 2px 14px">Not sure what a word means? Ask any basketball term and I'll explain it — with a coach's diagram where I have one. 📋</p>
+    <div style="display:flex;gap:8px">
+      <input id="termin" class="txt" placeholder="e.g. flex cut, pick and roll…" style="flex:1" onkeydown="if(event.key==='Enter')askTerm()">
+      <button class="btn-primary" style="padding:0 18px" onclick="askTerm()">Ask</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 2px">
+      ${["Flex cut","Pick & roll","Give-and-go","The key","Wing","The nail","Coffin corner","Box out"].map(q=>`<button class="quick" onclick="askTerm('${q.replace(/'/g,"\\'")}')">${q}</button>`).join("")}
+    </div>
+    <div id="termresult">${termState.result?termResultHTML(termState.result):""}</div>
+    <p class="note" style="margin-top:20px">Diagrams use standard coaching notation. Ask me anything — if I don't have a diagram, Coach IQ will still explain it.</p>`;
+  const el=$("#termin"); if(el&&termState.q){el.value=termState.q;}
+}
+window.askTerm=async(q)=>{
+  const inp=$("#termin"); const t=(q||(inp?inp.value:"")).trim(); if(!t)return;
+  termState.q=t;
+  const found=findTerm(t);
+  if(found){ termState.result={name:found.name,def:found.def,diagram:found.diagram}; renderTerms(); return; }
+  termState.result=null; renderTerms();
+  const rd=$("#termresult"); if(rd) rd.innerHTML=`<div class="card" style="margin-top:16px;text-align:center;color:var(--chalk-dim)"><div style="font-size:30px">📋</div><p style="margin-top:8px">Looking that up<span class="dots"></span></p></div>`;
+  let reply=await aiOrNull(`Explain the basketball term "${t}" simply for a young player, in 2-3 short sentences. If it is not a real basketball term, gently say you are not sure.`);
+  if(reply){ termState.result={name:t.replace(/\b\w/g,c=>c.toUpperCase()),def:reply,ai:true}; }
+  else { termState.result={name:t,def:"I don't have that one yet, and I can't reach Coach IQ right now. Try one of the terms above, or check your internet connection.",ai:true}; }
+  renderTerms();
+};
+
+// ================= PROGRESS (charts + log a best) =================
+function sparkline(points,opts){
+  // points: [{d,v}] ; returns svg string
+  const w=opts.w||300,h=opts.h||90,pad=8,lower=opts.lower;
+  if(!points||points.length===0) return `<div style="color:var(--chalk-dim);font-size:13px;padding:14px 0">No records logged yet — add one below to start your chart.</div>`;
+  const vals=points.map(p=>p.v);
+  let min=Math.min(...vals),max=Math.max(...vals);
+  if(min===max){min-=1;max+=1;}
+  const n=points.length;
+  const X=i=> n===1? w/2 : pad + (i/(n-1))*(w-2*pad);
+  const Y=v=> pad + (1-((v-min)/(max-min)))*(h-2*pad);
+  const col=opts.color||"#2f9e54";
+  let path=points.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(" ");
+  const dots=points.map((p,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3" fill="${col}"/>`).join("");
+  // best marker
+  const bestVal= lower? Math.min(...vals):Math.max(...vals);
+  const improving = n>1 ? (lower? vals[n-1]<=vals[0] : vals[n-1]>=vals[0]) : true;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block">
+    <path d="${path}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+  </svg>
+  <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--chalk-dim);margin-top:2px">
+    <span>${n} entr${n===1?'y':'ies'}</span>
+    <span style="color:${improving?'var(--line-soft)':'var(--chalk-dim)'}">Best: <b style="color:var(--flash)">${bestVal}${opts.unit||''}</b> ${improving?'▲ improving':''}</span>
+  </div>`;
+}
+
+function renderProgress(){
+  const p=me();
+  const keys=Object.keys(PB_DEFS);
+  app.innerHTML=topbar()+backbar("My Progress")+`
+    <p style="color:var(--chalk-dim);font-size:14px;margin:2px 2px 16px">Log a record and watch your line climb. Beating your own number is the whole game. 📈</p>
+    ${keys.map(k=>{
+      const def=PB_DEFS[k]; const hist=(p.pbHistory&&p.pbHistory[k])||[]; const best=p.pbs[k];
+      const col = k==='ft'?'#ffd23f':k==='broad'||k==='vert'?'#2f9e54':'#5aa9e6';
+      return `<div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-weight:800;font-size:15.5px">${def.label}</div>
+          <div style="font-size:13px;color:${best!=null?'var(--flash)':'var(--chalk-dim)'}">${best!=null?('PB '+best+def.unit):'No PB yet'}</div>
+        </div>
+        ${sparkline(hist,{color:col,unit:def.unit,lower:def.lower})}
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <input id="pb_${k}" class="txt" inputmode="decimal" placeholder="${def.unit||'#'}" style="flex:1;text-align:center" onkeydown="if(event.key==='Enter')logPB('${k}')">
+          <button class="btn-primary" onclick="logPB('${k}')">Save</button>
+        </div>
+      </div>`;
+    }).join("")}
+    <p class="note">Tip: log honestly and consistently — same drill, same setup. The trend matters more than any single number.</p>`;
+}
+window.logPB=(k)=>{
+  const el=$("#pb_"+k); if(!el)return; const v=parseFloat((el.value||"").replace(/[^0-9.]/g,"")); if(isNaN(v))return;
+  const {best}=savePB(k,v);
+  toast(best?`New personal best! ${v}${PB_DEFS[k].unit} 🎉`:`Logged ${v}${PB_DEFS[k].unit}. Keep at it!`);
+  renderProgress();
+};
+
+// ================= BACKUP / RESTORE =================
+function renderBackup(){
+  const p=me();
+  app.innerHTML=topbar()+backbar("Backup / Restore")+`
+    <p style="color:var(--chalk-dim);font-size:14px;margin:2px 2px 16px">Your progress saves on this device only. Back it up so you never lose your streak, or move it to a new phone.</p>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:16px;margin-bottom:6px">Save my progress</div>
+      <div style="color:var(--chalk-dim);font-size:13.5px;margin-bottom:12px">Downloads a small file with ${esc(p.name)}'s sessions, streak, badges and records. Keep it somewhere safe (email it to yourself, save to your photos/files).</div>
+      <button class="btn-primary" style="width:100%" onclick="exportProgress()">Download my progress file</button>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:800;font-size:16px;margin-bottom:6px">Restore on a new device</div>
+      <div style="color:var(--chalk-dim);font-size:13.5px;margin-bottom:12px">Open your saved file, copy everything in it, and paste it below. Or just open the file's text and paste it here.</div>
+      <textarea id="restorebox" class="txt" rows="4" placeholder="Paste your saved progress here…"></textarea>
+      <button class="btn-primary" style="width:100%;margin-top:10px" onclick="doRestore()">Restore progress</button>
+    </div>
+    <p class="note">Restoring will load that player and overwrite any progress with the same name on this device.</p>`;
+}
+window.exportProgress=()=>{ exportProgress(); toast("Progress file downloaded 📁"); };
+window.doRestore=()=>{
+  const el=$("#restorebox"); if(!el)return;
+  const ok=importProgressFromText(el.value);
+  if(ok){ toast("Progress restored! Welcome back 🏀"); screen="hub"; render(); }
+  else toast("Hmm, that didn't look right. Paste the whole saved file.");
+};
+
+// ---- Coach chat ----
+let chat=[];
+function renderCoach(){
+  if(!chat.length) chat=[{who:"coach",text:`Hey ${me().name}! 🏀 How did training or your last game go? Tell me what's on your mind — a tough loss, a skill to crack, or just need a boost?`}];
+  app.innerHTML=topbar()+backbar("AI Coach")+`
+    <div id="chatbox" style="display:flex;flex-direction:column;min-height:300px">
+      ${chat.map(m=>bubbleHTML(m)).join("")}
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 10px">
+      ${["I had a rough game","Pump me up!","How do I get a better shot?","I keep getting nervous"].map(q=>`<button class="quick" onclick="coachSend('${q.replace(/'/g,"\\'")}')">${q}</button>`).join("")}
+    </div>
+    <div style="display:flex;gap:8px">
+      <input id="chatin" class="txt" placeholder="Type to your coach…" style="flex:1" onkeydown="if(event.key==='Enter')coachSend()">
+      <button class="btn-primary" style="padding:0 18px" onclick="coachSend()">${IC.send}</button>
+    </div>`;
+  const cb=$("#chatbox"); if(cb) cb.scrollTop=cb.scrollHeight;
+}
+function bubbleHTML(m){
+  if(m.typing) return `<div class="bubble-row"><div class="bubble coach"><div class="who">Coach IQ</div><span class="dots"></span></div></div>`;
+  return `<div class="bubble-row"><div class="bubble ${m.who==='me'?'me':'coach'}">${m.who==='coach'?'<div class="who">Coach IQ</div>':''}${esc(m.text)}</div></div>`;
+}
+window.coachSend=async(text)=>{
+  const inp=$("#chatin"); const t=(text|| (inp?inp.value:"")).trim(); if(!t)return;
+  chat.push({who:"me",text:t});
+  if(flaggedDistress(t)){ chat.push({who:"coach",text:DISTRESS_REPLY}); renderCoach(); return; }
+  chat.push({who:"coach",typing:true}); renderCoach();
+  let reply = await aiOrNull(`Player ${me().name}, ${me().completed} sessions, ${me().streak}-day streak, says: "${t}". Reply as Coach IQ in 2-3 short sentences.`);
+  if(!reply) reply = pick(COACH_BANK[coachIntent(t)]);
+  chat.pop(); chat.push({who:"coach",text:reply}); renderCoach();
+};
+
+// ---- Smart picker ----
+let pk={legs:null,mood:null,game:null,result:null,busy:false};
+function renderPicker(){
+  if(pk.result||pk.busy){ renderPickerResult(); return; }
+  app.innerHTML=topbar()+backbar("What Should I Train?")+`
+    <p style="color:var(--chalk-dim);font-size:14.5px;margin:2px 2px 18px">Answer three quick taps and we'll pick today's best workout.</p>
+    ${optBlock("How are your legs today?","legs",["Fresh & ready","A bit tired","Pretty sore"])}
+    ${optBlock("How's your energy / mood?","mood",["Fired up","Okay","Low / frustrated"])}
+    ${optBlock("Got a game coming up?","game",["Today or tomorrow","In a few days","No game soon"])}
+    <button class="btn-primary" style="width:100%;margin-top:10px;${(pk.legs&&pk.mood&&pk.game)?'':'opacity:.4'}" onclick="doPick()">${IC.spark("#0a1512")} Pick my workout</button>`;
+}
+function optBlock(q,key,opts){
+  return `<div style="margin-bottom:16px"><div style="font-size:14.5px;font-weight:700;margin-bottom:8px">${q}</div>
+    <div class="opt-row">${opts.map(o=>`<button class="opt ${pk[key]===o?'on':''}" onclick="setOpt('${key}','${o.replace(/'/g,"\\'")}')">${o}</button>`).join("")}</div></div>`;
+}
+window.setOpt=(k,v)=>{pk[k]=v;renderPicker();};
+window.doPick=async()=>{
+  if(!(pk.legs&&pk.mood&&pk.game))return;
+  pk.busy=true; renderPicker();
+  let r=await aiOrNull(`Pick ONE basketball workout for today and say why in 2 short sentences. Legs=${pk.legs}, mood=${pk.mood}, next game=${pk.game}. Options: ${WORKOUTS.map(w=>w.title+" ("+w.phase+", "+w.focus+")").join("; ")}. Reply as JSON {"title","why","drills":["a","b","c"]} only.`);
+  let parsed=null; if(r){ try{ parsed=JSON.parse(r.replace(/```json|```/g,"").trim()); }catch{} }
+  if(!parsed) parsed=offlinePickWorkout(pk);
+  // ensure drills present
+  if(!parsed.drills||!parsed.drills.length){ const w=WORKOUTS.find(x=>x.title===parsed.title)||WORKOUTS[0]; parsed.drills=w.drills; }
+  pk.result=parsed; pk.busy=false; renderPicker();
+};
+function renderPickerResult(){
+  app.innerHTML=topbar()+backbar("Today's Pick")+(pk.busy?
+    `<div style="text-align:center;padding:50px;color:var(--chalk-dim)"><div style="font-size:40px">🏀</div><p style="margin-top:12px">Choosing your session<span class="dots"></span></p></div>`:
+    `<div class="card reveal" style="border-color:#5aa9e666;background:linear-gradient(180deg,#5aa9e61f,#5aa9e608);text-align:center">
+      <div style="font-size:12px;color:#5aa9e6;font-weight:800;letter-spacing:.1em;text-transform:uppercase">Recommended today</div>
+      <h2 style="font-size:28px;font-weight:900;margin:8px 0">${esc(pk.result.title)}</h2>
+      <p style="color:var(--chalk-dim);font-size:15px;max-width:40ch;margin:0 auto 14px">${esc(pk.result.why)}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+        ${(pk.result.drills||[]).map((d,i)=>drillChip(d,i)).join("")}
+      </div></div>
+      <button class="btn-primary" style="width:100%;margin-top:16px" onclick="logPick()">Done — log this session 🔥</button>
+      <button class="btn-ghost" style="margin-top:12px" onclick="resetPick()">Pick again</button>`);
+}
+window.logPick=()=>{logSession();const bEarned=earned(me());toast("Session logged. Nice work! 🏀");pk={legs:null,mood:null,game:null,result:null,busy:false};screen="hub";render();maybeBadgeToast(bEarned);};
+window.resetPick=()=>{pk={legs:null,mood:null,game:null,result:null,busy:false};renderPicker();};
+
+let lastBadges=[];
+function maybeBadgeToast(after){ /* simple: compare to pre-stored */ }
+
+// ---- Reframe ----
+let rf={style:"Facts",out:null,busy:false};
+function renderReframe(){
+  app.innerHTML=topbar()+backbar("Flip My Thinking")+`
+    <p style="color:var(--chalk-dim);font-size:14.5px;margin:2px 2px 16px">Type the exact thought that's bugging you. We'll flip it into something a strong player would tell themselves.</p>
+    <textarea id="thought" class="txt" rows="3" placeholder='e.g. "I missed the game-winner and let everyone down"'></textarea>
+    <div class="opt-row" style="margin:12px 0 14px">
+      ${["Facts","Calm","Compete"].map(s=>`<button class="opt ${rf.style===s?'on':''}" onclick="setRf('${s}')">${s}</button>`).join("")}
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="doFlip()">${IC.flip("#0a1512")} ${rf.busy?"Flipping…":"Flip it"}</button>
+    ${rf.out?`<div class="card reveal" style="margin-top:18px;border-color:var(--line-soft);background:linear-gradient(180deg,rgba(31,122,61,.28),rgba(31,122,61,.1))">
+      <div style="font-size:11px;color:var(--line-soft);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Flip it to</div>
+      <div style="font-size:18px;font-weight:800;line-height:1.45">${esc(rf.out)}</div></div>`:""}`;
+  const ta=$("#thought"); if(ta&&rf._keep){ta.value=rf._keep;}
+}
+window.setRf=s=>{rf.style=s;rf._keep=$("#thought")?$("#thought").value:"";renderReframe();};
+window.doFlip=async()=>{
+  const ta=$("#thought"); const txt=ta?ta.value.trim():""; if(!txt)return;
+  rf._keep=txt;
+  if(flaggedDistress(txt)){ rf.out=DISTRESS_REPLY; renderReframe(); return; }
+  rf.busy=true; renderReframe();
+  const styleDesc={Facts:"calm logic and perspective",Calm:"a calming, settling tone",Compete:"a fired-up competitive push"}[rf.style];
+  let r=await aiOrNull(`A young player thinks: "${txt}". Flip it into ONE short positive reframe (max 2 sentences) using ${styleDesc}. Speak directly to them, just the reframe.`);
+  if(!r){ const bank=REFRAME_BANK[rf.style]; r=pick(bank[reframeIntent(txt)]); }
+  rf.out=r; rf.busy=false; renderReframe();
+};
+
+// ---- Review ----
+function renderReview(){
+  const p=me();const b=earned(p);
+  app.innerHTML=topbar()+backbar("Coach's Review")+`
+    <div class="stats" style="margin:8px 0 18px">
+      <div class="stat"><div class="big">${p.completed}</div><div class="lbl">Sessions</div></div>
+      <div class="stat"><div class="big" style="color:var(--flash)">${p.streak>0?"🔥":""}${p.streak}</div><div class="lbl">Streak</div></div>
+      <div class="stat"><div class="big">${b.length}</div><div class="lbl">Badges</div></div>
+    </div>
+    <div class="card" style="border-color:#e8743c55;background:linear-gradient(180deg,#e8743c1f,#e8743c08);min-height:90px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">${IC.spark("#e8743c")}<span style="font-size:12px;color:#e8743c;font-weight:800;letter-spacing:.1em;text-transform:uppercase">Coach IQ says</span></div>
+      <div id="reviewtext" style="font-size:15.5px;line-height:1.55">Reading your progress<span class="dots"></span></div>
+    </div>
+    <div class="sectlabel" style="margin-top:22px">Badges</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      ${BADGES.map(bd=>{const got=b.includes(bd.id);return `<div class="badge" style="background:${got?'rgba(31,122,61,.2)':'rgba(8,20,16,.5)'};border:1px solid ${got?'var(--line-soft)':'rgba(47,158,84,.2)'};opacity:${got?1:.45}">
+        <div class="em" style="${got?'':'filter:grayscale(1)'}">${bd.icon}</div>
+        <div class="bl" style="color:${got?'var(--chalk)':'var(--chalk-dim)'}">${bd.label}</div></div>`;}).join("")}
+    </div>
+    <button class="btn-ghost" style="margin-top:18px" onclick="renderReview()">Refresh review</button>`;
+  loadReview();
+}
+async function loadReview(){
+  const p=me();const b=earned(p);
+  let r=await aiOrNull(`Give ${p.name} a short upbeat progress review and ONE next goal. ${p.completed} sessions, ${p.streak}-day streak, ${b.length} badges. 2-3 sentences, celebrate effort then one specific goal.`);
+  if(!r){
+    if(p.completed===0) r=`Welcome aboard, ${p.name}! Every champion starts with session one. Your first goal: complete one workout this week and bank that streak. 🏀`;
+    else if(p.completed<5) r=`Nice start, ${p.name} — ${p.completed} session${p.completed>1?'s':''} in and building. Keep showing up; aim for 5 total to earn your next badge. ⭐`;
+    else if(p.streak>=3) r=`Love the consistency, ${p.name} — a ${p.streak}-day streak shows real discipline. Next goal: keep it rolling and log a personal best this week. 🔥`;
+    else r=`Solid work, ${p.name} — ${p.completed} sessions banked. Your next goal: train two days back-to-back to start a fresh streak. 💪`;
+  }
+  const el=$("#reviewtext"); if(el) el.textContent=r;
+}
+
+// ---- boot ----
+render();
+</script>
+</body>
+</html>
